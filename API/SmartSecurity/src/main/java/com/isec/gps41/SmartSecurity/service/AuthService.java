@@ -1,0 +1,43 @@
+package com.isec.gps41.SmartSecurity.service;
+
+import com.isec.gps41.SmartSecurity.constants.ROLES;
+import com.isec.gps41.SmartSecurity.model.User;
+import com.isec.gps41.SmartSecurity.payload.LoginRequest;
+import com.isec.gps41.SmartSecurity.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthService {
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+    public User registerUser(LoginRequest request) {
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
+        user.setRole(ROLES.USER);
+        User u =  userRepository.save(user);
+        if(u == null){
+            throw new RuntimeException("Failed");
+        }
+        return u;
+    }
+    public User login(LoginRequest request){
+        Authentication authentication =  authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail()
+                ,request.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return userRepository.findByEmail(request.getEmail());
+    }
+}
