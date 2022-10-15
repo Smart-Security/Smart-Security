@@ -24,7 +24,7 @@ public class UserDetails implements UserDetailsService {
     public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         com.isec.gps41.SmartSecurity.model.User user = userRepository.findByEmail(email);
         if(user == null){
-            return null;
+            throw new UsernameNotFoundException("User not found");
         }
         return new User(user.getEmail(), user.getPassword(), List.of(user.getRole()));
     }

@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -41,6 +42,6 @@ public class User {
     private Integer age;
 
     @ManyToMany
-    Set<Division> divisions;
+    Set<Division> divisions = new HashSet<>();
 
 }

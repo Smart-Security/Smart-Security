@@ -1,7 +1,12 @@
 package com.isec.gps41.SmartSecurity.controllers;
 
 import com.isec.gps41.SmartSecurity.constants.ROLES;
+import com.isec.gps41.SmartSecurity.model.Division;
+import com.isec.gps41.SmartSecurity.model.Floor;
 import com.isec.gps41.SmartSecurity.model.User;
+import com.isec.gps41.SmartSecurity.repository.AlarmRepository;
+import com.isec.gps41.SmartSecurity.repository.DivisionRepository;
+import com.isec.gps41.SmartSecurity.repository.FloorRepository;
 import com.isec.gps41.SmartSecurity.repository.UserRepository;
 import com.isec.gps41.SmartSecurity.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +28,15 @@ public class TestController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    FloorRepository floorRepository;
+
+    @Autowired
+    DivisionRepository divisionRepository;
+
+    @Autowired
+    AlarmRepository alarmRepository;
+
     @GetMapping()
     public ResponseEntity<String> testeAuth(@RequestHeader("Authorization") String token){
 
@@ -39,6 +53,32 @@ public class TestController {
 
 
         userRepository.save(user);
+
+
+        return new ResponseEntity<>("Ok", HttpStatus.OK);
+    }
+
+    //only for test
+    @GetMapping("/division")
+    public ResponseEntity<String> addDivision(@RequestHeader("Authorization") String token){
+
+        Floor floor = new Floor();
+        floor.setNumber(0);
+
+        Division division = new Division();
+        division.setFloor(floor);
+
+
+
+        return new ResponseEntity<>("Ok", HttpStatus.OK);
+    }
+
+
+    //Only for testes
+    @GetMapping("/floor")
+    public ResponseEntity<String> addFloor(@RequestHeader("Authorization") String token){
+
+
 
 
         return new ResponseEntity<>("Ok", HttpStatus.OK);

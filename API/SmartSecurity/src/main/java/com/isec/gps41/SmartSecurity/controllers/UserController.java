@@ -2,6 +2,7 @@ package com.isec.gps41.SmartSecurity.controllers;
 
 import com.isec.gps41.SmartSecurity.constants.ROLES;
 import com.isec.gps41.SmartSecurity.payload.UserDto;
+import com.isec.gps41.SmartSecurity.payload.users.UserNewRequest;
 import com.isec.gps41.SmartSecurity.payload.users.UsersList;
 import com.isec.gps41.SmartSecurity.repository.UserRepository;
 import com.isec.gps41.SmartSecurity.security.JwtTokenProvider;
@@ -36,6 +37,13 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('" + ROLES.SECURITY_GUARD + "')")
+    @PostMapping("/new")
+    public ResponseEntity<UserNewRequest> newUser(@RequestHeader("Authorization") String auth, @RequestBody UserNewRequest userNewRequest){
+        String token = auth.substring(7);
+        buildingService.newUser(userNewRequest, token);
 
+        return new ResponseEntity<>(userNewRequest, HttpStatus.CREATED);
+    }
 
 }

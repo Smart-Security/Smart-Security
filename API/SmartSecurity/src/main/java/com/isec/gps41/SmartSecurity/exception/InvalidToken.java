@@ -7,10 +7,9 @@ import org.springframework.http.HttpStatus;
 @Setter
 @NoArgsConstructor
 
-public class ParamInvalid extends ApiException{
+public class InvalidToken extends ApiException{
 
-
-    public ParamInvalid(String message, HttpStatus status) {
+    public InvalidToken(String message, HttpStatus status) {
         super(message, status);
     }
 }

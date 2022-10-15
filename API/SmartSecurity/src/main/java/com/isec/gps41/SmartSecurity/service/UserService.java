@@ -2,6 +2,7 @@ package com.isec.gps41.SmartSecurity.service;
 
 import com.isec.gps41.SmartSecurity.constants.ROLES;
 import com.isec.gps41.SmartSecurity.exception.ResourcesInvalid;
+import com.isec.gps41.SmartSecurity.model.Division;
 import com.isec.gps41.SmartSecurity.model.User;
 import com.isec.gps41.SmartSecurity.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -63,5 +65,17 @@ public class UserService {
         if (includGuard)
             return userRepository.countAllByRole(ROLES.USER_ROLE);
         return userRepository.countAllByRoleAndRole(ROLES.SECURITY_GUARD_ROLE, ROLES.USER_ROLE);
+    }
+
+    public void create(User user, Set<Division> divisions) {
+        try {
+            if (userRepository.existsByEmail(user.getEmail())) {
+                throw new ResourcesInvalid("Email used", HttpStatus.BAD_REQUEST);
+            }
+            user.setDivisions(divisions);
+            userRepository.save(user);
+        }catch (DataAccessException ex){
+            throw new ResourcesInvalid( ex.getMessage() , HttpStatus.BAD_REQUEST);
+        }
     }
 }

@@ -6,11 +6,9 @@ import org.springframework.http.HttpStatus;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+public class ApiException extends RuntimeException{
+    private String message;
+    private HttpStatus status;
 
-public class ParamInvalid extends ApiException{
-
-
-    public ParamInvalid(String message, HttpStatus status) {
-        super(message, status);
-    }
 }

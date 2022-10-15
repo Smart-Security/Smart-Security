@@ -20,7 +20,7 @@ public class Alarm {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id ;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true, updatable = false)
     UUID uuid = UUID.randomUUID();
 
     @Column(nullable = false)

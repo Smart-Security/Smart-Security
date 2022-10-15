@@ -29,4 +29,12 @@ public class UserDto {
         userDto.uuid = user.getUuid();
         return  userDto;
     }
+    public static User maptoUser(UserDto userdto){
+        User user = new User();
+        user.setAge(userdto.getAge());
+        user.setEmail(userdto.getEmail());;
+        user.setName(userdto.getName());
+        user.setUuid(userdto.getUuid());
+        return  user;
+    }
 }
