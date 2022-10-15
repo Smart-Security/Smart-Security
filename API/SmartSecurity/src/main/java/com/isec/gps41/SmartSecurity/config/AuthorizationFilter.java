@@ -40,7 +40,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             if(tokenProvider.validateToken(token)){
                 String email = tokenProvider.getEmailByToken(token);
                 org.springframework.security.core.userdetails.UserDetails user = userDetails.loadUserByUsername(email);
-                UsernamePasswordAuthenticationToken uPAT = new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+                UsernamePasswordAuthenticationToken uPAT = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(uPAT);
                 System.out.println(Instant.now());
             }

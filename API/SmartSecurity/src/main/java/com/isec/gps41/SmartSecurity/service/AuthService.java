@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -25,11 +25,11 @@ public class AuthService {
         User user = new User();
         user.setEmail(request.getEmail());
         user.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
-        user.setRole(ROLES.USER);
-        User u =  userRepository.save(user);
-        if(u == null){
-            throw new RuntimeException("Failed");
-        }
+        user.setRole(ROLES.USER_ROLE);
+        user.setAge(10);
+        user.setName("aa");
+        User u =  userService.create(user);
+
         return u;
     }
     public User login(LoginRequest request){
@@ -38,6 +38,6 @@ public class AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return userRepository.findByEmail(request.getEmail());
+        return userService.findByEmail(request.getEmail());
     }
 }
