@@ -4,11 +4,6 @@ import './administration.page.css'
 import { Navigate } from 'react-router-dom'
 
 export default class AdministrationPage extends React.Component {
-
-    componentDidMount() {
-
-    }
-
     render() {
 
         // Redirect if the user is not logged in
