@@ -6,6 +6,7 @@ import com.isec.gps41.SmartSecurity.exception.ParamInvalid;
 import com.isec.gps41.SmartSecurity.exception.ResourcesInvalid;
 import com.isec.gps41.SmartSecurity.model.Division;
 import com.isec.gps41.SmartSecurity.model.User;
+import com.isec.gps41.SmartSecurity.payload.UserDto;
 import com.isec.gps41.SmartSecurity.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -89,16 +89,21 @@ public class UserService {
     }
 
 
-    public void update(User user, Set<Division> divisions) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new ResourcesInvalid("Email used", HttpStatus.BAD_REQUEST);
+    public void update(User user, Set<Division> divisions, UserDto userDto) {
+        if(!userDto.getEmail().equals(user.getEmail())){
+            if (userRepository.existsByEmail(userDto.getEmail())) {
+                throw new ResourcesInvalid("Email used", HttpStatus.BAD_REQUEST);
+            }
+            user.setEmail(userDto.getEmail());
         }
+        user.setName(userDto.getName());
+        user.setAge(userDto.getAge());
+
         user.setDivisions(divisions);
         userRepository.save(user);
     }
 
     public User findUserByUUID(UUID userUUID) {
-       List<User> ue = userRepository.findAll();
         User u = userRepository.findByUuid(userUUID).orElseThrow( () -> new ParamInvalid("UUID invalid", HttpStatus.BAD_REQUEST));
         return u;
     }

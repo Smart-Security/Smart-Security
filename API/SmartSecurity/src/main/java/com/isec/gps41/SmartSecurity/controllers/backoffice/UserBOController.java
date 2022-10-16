@@ -3,6 +3,7 @@ package com.isec.gps41.SmartSecurity.controllers.backoffice;
 import com.isec.gps41.SmartSecurity.constants.ROLES;
 import com.isec.gps41.SmartSecurity.payload.UserDto;
 import com.isec.gps41.SmartSecurity.payload.users.UserNewRequest;
+import com.isec.gps41.SmartSecurity.payload.users.UserUpdateRequest;
 import com.isec.gps41.SmartSecurity.payload.users.UsersList;
 import com.isec.gps41.SmartSecurity.service.BuildingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,11 +47,11 @@ public class UserBOController {
 
     @PreAuthorize("hasRole('" + ROLES.SECURITY_GUARD + "')")
     @PutMapping("/{uuid}")
-    public ResponseEntity<UserNewRequest> update(@RequestHeader("Authorization")String auth,
-                                                    @RequestParam(name = "uuid")UUID uuid,
-                                                    @RequestBody UserNewRequest userNewRequest){
+    public ResponseEntity<UserUpdateRequest> update(@RequestHeader("Authorization")String auth,
+                                                    @PathVariable(name = "uuid")UUID uuid,
+                                                    @RequestBody UserUpdateRequest userUpdateRequest){
 
-        return new ResponseEntity<>(buildingService.updateUser(userNewRequest, uuid), HttpStatus.OK) ;
+        return new ResponseEntity<>(buildingService.updateUser(userUpdateRequest, uuid), HttpStatus.OK) ;
     }
 
     @PreAuthorize("hasRole('" + ROLES.SECURITY_GUARD + "')")

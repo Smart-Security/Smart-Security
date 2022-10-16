@@ -179,6 +179,47 @@
 					"response": []
 				},
 				{
+					"name": "Edit User by security guard Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pZWxAZ21haWwuY29tIiwianRpIjoiMiIsImlhdCI6MTY2NTk1MDU5MiwiZXhwIjoxNjY2MjUwNTkyfQ._avS82QbEeo5eIz2FRMJ9_EpvuDlmkpWLrHVPoViqaYMkUo7BLfI1wuNcwcVRUREF_zZ5RrZLe9rC0x5gxNvPA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user\":{\n        \n        \"email\" : \"henri@gmail.com\",\n        \"name\" : \"Henr Marques\",\n        \"age\" : 24\n    },\n    \"password\": \"asd123\",\n    \"divisions\": [\n        \"8091f677-bfd5-4d99-aabe-b8096e1b77f6\",\n        \"9ea3022a-2d36-4c74-8114-5e0e757efebd\"\n    ]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/bo/users/new",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bo",
+								"users",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get info by building",
 					"request": {
 						"auth": {

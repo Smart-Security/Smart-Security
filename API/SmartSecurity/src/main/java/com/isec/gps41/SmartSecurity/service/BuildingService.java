@@ -9,6 +9,7 @@ import com.isec.gps41.SmartSecurity.payload.BuildingDetailsRequest;
 import com.isec.gps41.SmartSecurity.payload.UserDto;
 import com.isec.gps41.SmartSecurity.payload.floor.FloorDto;
 import com.isec.gps41.SmartSecurity.payload.users.UserNewRequest;
+import com.isec.gps41.SmartSecurity.payload.users.UserUpdateRequest;
 import com.isec.gps41.SmartSecurity.payload.users.UsersList;
 import com.isec.gps41.SmartSecurity.repository.FloorRepository;
 import com.isec.gps41.SmartSecurity.security.JwtTokenProvider;
@@ -69,10 +70,12 @@ public class BuildingService {
     }
 
 
-    public UserNewRequest updateUser(UserNewRequest userUpdateRequest, UUID uuid) {
+    public UserUpdateRequest updateUser(UserUpdateRequest userUpdateRequest, UUID uuid) {
         Set<Division> divisions = divisionService.getDivisionsByUUID(userUpdateRequest.getDivisions());
+        User user = userService.findUserByUUID(uuid);
 
-        userService.update(UserDto.maptoUser(userUpdateRequest.getUser()), divisions);
+        userService.update(user, divisions, userUpdateRequest.getUser());
+        userUpdateRequest.setUser(UserDto.maptoDto(user));
         return userUpdateRequest;
     }
 
