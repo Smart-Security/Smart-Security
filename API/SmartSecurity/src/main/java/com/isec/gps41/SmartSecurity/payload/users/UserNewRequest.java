@@ -9,7 +9,8 @@ import java.util.UUID;
 @Data
 public class UserNewRequest {
 
-    UserDto userDto;
-    List<UUID> divisionsUUIDS;
+    UserDto user;
+    String password;
+    List<UUID> divisions;
 
 }

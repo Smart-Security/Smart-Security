@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -23,7 +24,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id ;
 
-    @Column(nullable = false)
+    @Type(type="org.hibernate.type.UUIDCharType")
+    @Column(nullable = false, unique = true , updatable = false)
     private UUID uuid = UUID.randomUUID();
 
     @Column(nullable = false, unique = true)

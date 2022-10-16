@@ -1,8 +1,8 @@
-package com.isec.gps41.SmartSecurity.controllers;
+package com.isec.gps41.SmartSecurity.controllers.backoffice;
 
 import com.isec.gps41.SmartSecurity.constants.ROLES;
+import com.isec.gps41.SmartSecurity.payload.UserDto;
 import com.isec.gps41.SmartSecurity.payload.users.UserNewRequest;
-import com.isec.gps41.SmartSecurity.payload.users.UserUpdateRequest;
 import com.isec.gps41.SmartSecurity.payload.users.UsersList;
 import com.isec.gps41.SmartSecurity.service.BuildingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/users")
-public class UserController {
+@RequestMapping("/api/bo/users")
+public class UserBOController {
 
     @Autowired
     private BuildingService buildingService;
@@ -35,11 +35,11 @@ public class UserController {
 
     @PreAuthorize("hasRole('" + ROLES.SECURITY_GUARD + "')")
     @PostMapping("/new")
-    public ResponseEntity<UserNewRequest> newUser(@RequestHeader("Authorization") String auth, @RequestBody UserNewRequest userNewRequest){
+    public ResponseEntity<UserDto> newUser(@RequestHeader("Authorization") String auth, @RequestBody UserNewRequest userNewRequest){
         String token = auth.substring(7);
-        buildingService.newUser(userNewRequest, token);
+        UserDto u = buildingService.newUser(userNewRequest, token);
 
-        return new ResponseEntity<>(userNewRequest, HttpStatus.CREATED);
+        return new ResponseEntity<>(u, HttpStatus.CREATED);
     }
 
 
@@ -53,12 +53,19 @@ public class UserController {
         return new ResponseEntity<>(buildingService.updateUser(userNewRequest, uuid), HttpStatus.OK) ;
     }
 
+    @PreAuthorize("hasRole('" + ROLES.SECURITY_GUARD + "')")
     @GetMapping("/{uuid}")
-    public ResponseEntity<String>show( @RequestParam(name = "uuid")UUID uuid){
-
-        return new ResponseEntity<>("", HttpStatus.OK);
+    public ResponseEntity<UserDto>show(@PathVariable(name = "uuid")UUID uuid){
+        UserDto u = buildingService.getUserByUUID(uuid);
+        return new ResponseEntity<>(u, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('" + ROLES.SECURITY_GUARD + "')")
+    @DeleteMapping("/{uuid}")
+    public ResponseEntity<String>destroy( @PathVariable(name = "uuid")UUID uuid){
+        buildingService.destroyUser(uuid);
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
 
 
 }

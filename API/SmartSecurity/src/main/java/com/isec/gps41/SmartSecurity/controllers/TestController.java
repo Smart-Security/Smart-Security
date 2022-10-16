@@ -2,6 +2,9 @@ package com.isec.gps41.SmartSecurity.controllers;
 
 import com.isec.gps41.SmartSecurity.constants.ROLES;
 import com.isec.gps41.SmartSecurity.model.*;
+import com.isec.gps41.SmartSecurity.payload.UserDto;
+import com.isec.gps41.SmartSecurity.payload.division.DivisionDto;
+import com.isec.gps41.SmartSecurity.payload.users.UserNewRequest;
 import com.isec.gps41.SmartSecurity.repository.AlarmRepository;
 import com.isec.gps41.SmartSecurity.repository.DivisionRepository;
 import com.isec.gps41.SmartSecurity.repository.FloorRepository;
@@ -16,8 +19,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/test")
@@ -194,5 +196,17 @@ public class TestController {
         floor.forEach(System.out::println);
 
         return new ResponseEntity<>("Ok", HttpStatus.OK);
+    }
+
+    @GetMapping("/new")
+    public ResponseEntity<UserNewRequest> test(@RequestHeader("Authorization") String token){
+
+
+        UserNewRequest userNewRequest = new UserNewRequest();
+        UserDto u = UserDto.maptoDto(userRepository.findAll().stream().findFirst().get());
+        userNewRequest.setUser(u);
+        userNewRequest.setDivisions(u.getDivisionDtos().stream().map(DivisionDto::getUuid).toList());
+        userNewRequest.setDivisions(new ArrayList<>(Collections.singleton(UUID.randomUUID())));
+        return new ResponseEntity<>(userNewRequest, HttpStatus.OK);
     }
 }

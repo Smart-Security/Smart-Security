@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,12 +22,22 @@ public class DivisionService {
         if(divisionsUUIDS == null || divisionsUUIDS.size() == 0){
             throw new ResourcesInvalid("One or more divisions doesn't exists", HttpStatus.BAD_REQUEST);
         }
-        Set<Division> divisions = divisionRepository.findAll().stream().filter(division -> divisionsUUIDS.contains(division.getUuid())).collect(Collectors.toSet());
+        List<Division> divisions = divisionRepository.findAll();
+        Set<Division> d =  new HashSet<>();//divisions.stream().filter(division -> divisionsUUIDS.contains(division.getUuid())).collect(Collectors.toSet());
+        divisions.forEach( division -> {
+            for (UUID divisionsUUID : divisionsUUIDS) {
+                System.out.println(division.getUuid().toString() + " -> " + divisionsUUID.toString());
+                if(divisionsUUID.equals(division.getUuid())){
+                    d.add(division);
+                    break;
+                }
+            }
+        });
 
-        if(divisionsUUIDS.size() != divisions.size()){
+        if(divisionsUUIDS.size() != d.size()){
             throw new ResourcesInvalid("One or more divisions doesn't exists", HttpStatus.BAD_REQUEST);
         }
 
-        return divisions;
+        return d;
     }
 }

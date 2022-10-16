@@ -1,0 +1,371 @@
+{
+	"info": {
+		"_postman_id": "7e7cd17a-093f-4ee2-8af9-71eed2066806",
+		"name": "SmartSecurity",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20123677"
+	},
+	"item": [
+		{
+			"name": "Security Admin",
+			"item": [
+				{
+					"name": "Get info for users paginate",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pZWxAZ21haWwuY29tIiwianRpIjoiMiIsImlhdCI6MTY2NTkzNTQ1MCwiZXhwIjoxNjY2MjM1NDUwfQ.kcp6FY2LTsRw8FBaCOmlhyNafghzn__skh1XltZuJXbM1UBphUUfy7UNzKXvdzVj2T_RXKsoxIAwwiCFRHvkFg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/bo/users?pageNo=0&pageSize=5&ord=asc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bo",
+								"users"
+							],
+							"query": [
+								{
+									"key": "pageNo",
+									"value": "0"
+								},
+								{
+									"key": "pageSize",
+									"value": "5"
+								},
+								{
+									"key": "ord",
+									"value": "asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login security guard",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"daniel@gmail.com\",\n    \"password\": \"asd123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get information of user by uuid",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pQGdtYWlsLmNvbSIsImp0aSI6IjEiLCJpYXQiOjE2NjU5MzU3NjUsImV4cCI6MTY2NjIzNTc2NX0.A_1ulwHxDU6V8gMpyMjXez36kwiDYR2rOF5kgXFXqJkZk6XZXptjVQ5OP76oPHZZnEm_wpk3NsZzDuxod96fug",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/bo/users/8c0c045c-d9d7-4ca6-869b-7c4a21216378",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bo",
+								"users",
+								"8c0c045c-d9d7-4ca6-869b-7c4a21216378"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/bo/users/95c61134-a6e1-47a6-8f69-4497de431dcf",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bo",
+								"users",
+								"95c61134-a6e1-47a6-8f69-4497de431dcf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add User by security guard",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pZWxAZ21haWwuY29tIiwianRpIjoiMiIsImlhdCI6MTY2NTk1MDU5MiwiZXhwIjoxNjY2MjUwNTkyfQ._avS82QbEeo5eIz2FRMJ9_EpvuDlmkpWLrHVPoViqaYMkUo7BLfI1wuNcwcVRUREF_zZ5RrZLe9rC0x5gxNvPA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user\":{\n        \n        \"email\" : \"henri@gmail.com\",\n        \"name\" : \"Henr Marques\",\n        \"age\" : 24\n    },\n    \"password\": \"asd123\",\n    \"divisions\": [\n        \"8091f677-bfd5-4d99-aabe-b8096e1b77f6\",\n        \"9ea3022a-2d36-4c74-8114-5e0e757efebd\"\n    ]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/bo/users/new",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bo",
+								"users",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get info by building",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pZWxAZ21haWwuY29tIiwianRpIjoiMiIsImlhdCI6MTY2NTkzODE0OSwiZXhwIjoxNjY2MjM4MTQ5fQ.sw9ar8cIvkZ4NExSU634grr1BAtk20cuX841Sh0yydOnIpzPCl6Ajmi3rPV5cn1LFN7binjs67zv4Py2J_Bs4g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/bo/building",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bo",
+								"building"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tests",
+			"item": [
+				{
+					"name": "Add divisions and alarms",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pQGdtYWlsLmNvbSIsImp0aSI6IjEiLCJpYXQiOjE2NjU5MzU3NjUsImV4cCI6MTY2NjIzNTc2NX0.A_1ulwHxDU6V8gMpyMjXez36kwiDYR2rOF5kgXFXqJkZk6XZXptjVQ5OP76oPHZZnEm_wpk3NsZzDuxod96fug",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/test/division",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"test",
+								"division"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"dani@gmail.com\",\n    \"password\" : \"daniel\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add security guard",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pZWxAZ21haWwuY29tIiwianRpIjoiMiIsImlhdCI6MTY2NTk1MDU5MiwiZXhwIjoxNjY2MjUwNTkyfQ._avS82QbEeo5eIz2FRMJ9_EpvuDlmkpWLrHVPoViqaYMkUo7BLfI1wuNcwcVRUREF_zZ5RrZLe9rC0x5gxNvPA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/test",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"test"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"dani@gmail.com\",\n    \"password\": \"daniel\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get your profile with token",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pQGdtYWlsLmNvbSIsImp0aSI6IjEiLCJpYXQiOjE2NjU5NTU0MjksImV4cCI6MTY2NjI1NTQyOX0.G_A5kMeK5ImzPMKsYYZt5GRoQKJwMzNrlTvr6A2Y99fUkKAkBOzWpv7sByS-Kg8CU0Z7RbkOJqQmcrSiAeiaUw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/fo/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"fo",
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

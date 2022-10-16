@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ public class Division {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Type(type="org.hibernate.type.UUIDCharType")
+    @Column(nullable = false, unique = true , updatable = false)
     private UUID uuid = UUID.randomUUID();
 
     private TypeDivision type;

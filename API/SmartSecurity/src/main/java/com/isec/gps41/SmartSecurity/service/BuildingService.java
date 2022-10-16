@@ -3,19 +3,24 @@ package com.isec.gps41.SmartSecurity.service;
 import com.isec.gps41.SmartSecurity.exception.InvalidToken;
 import com.isec.gps41.SmartSecurity.exception.ParamInvalid;
 import com.isec.gps41.SmartSecurity.model.Division;
+import com.isec.gps41.SmartSecurity.model.Floor;
 import com.isec.gps41.SmartSecurity.model.User;
+import com.isec.gps41.SmartSecurity.payload.BuildingDetailsRequest;
 import com.isec.gps41.SmartSecurity.payload.UserDto;
+import com.isec.gps41.SmartSecurity.payload.floor.FloorDto;
 import com.isec.gps41.SmartSecurity.payload.users.UserNewRequest;
-import com.isec.gps41.SmartSecurity.payload.users.UserUpdateRequest;
 import com.isec.gps41.SmartSecurity.payload.users.UsersList;
+import com.isec.gps41.SmartSecurity.repository.FloorRepository;
 import com.isec.gps41.SmartSecurity.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class BuildingService {
@@ -28,6 +33,9 @@ public class BuildingService {
 
     @Autowired
     DivisionService divisionService;
+
+    @Autowired
+    FloorRepository floorRepository;
 
     public UsersList getUsers(int numPage, int size, String ord) {
         validateOrder(ord);
@@ -53,17 +61,18 @@ public class BuildingService {
 
     public UserDto newUser(UserNewRequest userNewRequest, String token) {
         long id = tokenProvider.getIdByToken(token);
-        Set<Division> divisions = divisionService.getDivisionsByUUID(userNewRequest.getDivisionsUUIDS());
+        Set<Division> divisions = divisionService.getDivisionsByUUID(userNewRequest.getDivisions());
+        User u = UserDto.maptoUser(userNewRequest.getUser());
+        u.setPassword(userNewRequest.getPassword());
+        return UserDto.maptoDto(userService.create(u, divisions));
 
-        userService.create(UserDto.maptoUser(userNewRequest.getUserDto()), divisions);
-        return userNewRequest.getUserDto();
     }
 
 
     public UserNewRequest updateUser(UserNewRequest userUpdateRequest, UUID uuid) {
-        Set<Division> divisions = divisionService.getDivisionsByUUID(userUpdateRequest.getDivisionsUUIDS());
+        Set<Division> divisions = divisionService.getDivisionsByUUID(userUpdateRequest.getDivisions());
 
-        userService.update(UserDto.maptoUser(userUpdateRequest.getUserDto()), divisions);
+        userService.update(UserDto.maptoUser(userUpdateRequest.getUser()), divisions);
         return userUpdateRequest;
     }
 
@@ -73,5 +82,29 @@ public class BuildingService {
         if(auth.length() < 7){
             throw new InvalidToken("Invalid token", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    public BuildingDetailsRequest getBuildingDetails() {
+        BuildingDetailsRequest response = new BuildingDetailsRequest();
+        List<Floor> floors = floorRepository.findAll(Sort.by(Sort.Direction.ASC, "number"));
+        List<FloorDto> dtos = floors.stream().map(FloorDto::mapToDto).toList();
+        response.setFloorDtos(dtos);
+
+        return response;
+    }
+
+    public void destroyUser(UUID uuid) {
+        userService.destroyUser(uuid);
+    }
+
+    public UserDto getUserByUUID(UUID uuid) {
+        User u  = userService.findUserByUUID(uuid);
+        return UserDto.maptoDto(u);
+    }
+
+    public UserDto getUserDetails(String token) {
+        long id = tokenProvider.getIdByToken(token);
+        User user = userService.findUserById(id);
+        return UserDto.maptoDto(user);
     }
 }

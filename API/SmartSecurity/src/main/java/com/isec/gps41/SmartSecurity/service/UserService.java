@@ -1,6 +1,7 @@
 package com.isec.gps41.SmartSecurity.service;
 
 import com.isec.gps41.SmartSecurity.constants.ROLES;
+import com.isec.gps41.SmartSecurity.exception.InvalidToken;
 import com.isec.gps41.SmartSecurity.exception.ParamInvalid;
 import com.isec.gps41.SmartSecurity.exception.ResourcesInvalid;
 import com.isec.gps41.SmartSecurity.model.Division;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -66,30 +68,47 @@ public class UserService {
 
     public int getMaxUsers(boolean includGuard) {
         if (includGuard)
-            return userRepository.countAllByRole(ROLES.USER_ROLE);
-        return userRepository.countAllByRoleAndRole(ROLES.SECURITY_GUARD_ROLE, ROLES.USER_ROLE);
+            return userRepository.countAllByRoleOrRole(ROLES.SECURITY_GUARD_ROLE, ROLES.USER_ROLE);
+        return userRepository.countAllByRole(ROLES.USER_ROLE);
     }
 
-    public void create(User user, Set<Division> divisions) {
+    public User create(User user, Set<Division> divisions) {
         try {
             if (userRepository.existsByEmail(user.getEmail())) {
                 throw new ResourcesInvalid("Email used", HttpStatus.BAD_REQUEST);
             }
+            user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+            user.setRole(ROLES.USER_ROLE);
             user.setDivisions(divisions);
-            userRepository.save(user);
+            user.setUuid(UUID.randomUUID());
+            user = userRepository.save(user);
         }catch (DataAccessException ex){
             throw new ResourcesInvalid( ex.getMessage() , HttpStatus.BAD_REQUEST);
         }
+        return user;
     }
 
 
     public void update(User user, Set<Division> divisions) {
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new ResourcesInvalid("Email used", HttpStatus.BAD_REQUEST);
+        }
         user.setDivisions(divisions);
         userRepository.save(user);
     }
 
     public User findUserByUUID(UUID userUUID) {
+       List<User> ue = userRepository.findAll();
         User u = userRepository.findByUuid(userUUID).orElseThrow( () -> new ParamInvalid("UUID invalid", HttpStatus.BAD_REQUEST));
         return u;
+    }
+
+    public void destroyUser(UUID uuid) {
+        User user = findUserByUUID(uuid);
+        userRepository.delete(user);
+    }
+
+    public User findUserById(long id) {
+        return userRepository.findById(id).orElseThrow(() -> new InvalidToken("Token invalid, Please login again", HttpStatus.UNAUTHORIZED));
     }
 }

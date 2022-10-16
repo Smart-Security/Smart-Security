@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -20,6 +21,7 @@ public class Alarm {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id ;
 
+    @Type(type="org.hibernate.type.UUIDCharType")
     @Column(nullable = false, unique = true, updatable = false)
     UUID uuid = UUID.randomUUID();
 
