@@ -46,11 +46,11 @@ public class UserController {
 
     @PreAuthorize("hasRole('" + ROLES.SECURITY_GUARD + "')")
     @PutMapping("/{uuid}")
-    public ResponseEntity<UserUpdateRequest> update(@RequestHeader("Authorization")String auth,
+    public ResponseEntity<UserNewRequest> update(@RequestHeader("Authorization")String auth,
                                                     @RequestParam(name = "uuid")UUID uuid,
-                                                    @RequestBody UserUpdateRequest userUpdateRequest){
+                                                    @RequestBody UserNewRequest userNewRequest){
 
-        return new ResponseEntity<>(buildingService.updateUser(userUpdateRequest, uuid), HttpStatus.OK) ;
+        return new ResponseEntity<>(buildingService.updateUser(userNewRequest, uuid), HttpStatus.OK) ;
     }
 
     @GetMapping("/{uuid}")

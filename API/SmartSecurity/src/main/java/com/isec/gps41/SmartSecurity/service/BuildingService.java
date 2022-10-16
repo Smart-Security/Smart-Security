@@ -60,10 +60,10 @@ public class BuildingService {
     }
 
 
-    public UserUpdateRequest updateUser(UserUpdateRequest userUpdateRequest, UUID uuid) {
+    public UserNewRequest updateUser(UserNewRequest userUpdateRequest, UUID uuid) {
         Set<Division> divisions = divisionService.getDivisionsByUUID(userUpdateRequest.getDivisionsUUIDS());
-        User user = userService.findUserByUUID(uuid);
-        userService.update(user, divisions);
+
+        userService.update(UserDto.maptoUser(userUpdateRequest.getUserDto()), divisions);
         return userUpdateRequest;
     }
 

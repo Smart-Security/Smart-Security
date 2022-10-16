@@ -1,5 +1,6 @@
 package com.isec.gps41.SmartSecurity.config;
 
+import com.isec.gps41.SmartSecurity.exception.AuthenticationEntryPoint;
 import com.isec.gps41.SmartSecurity.service.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -40,12 +41,13 @@ public class SecurityConfig {
     @Autowired
     AuthorizationFilter authorizationFilter;
 
-
+    @Autowired
+    AuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.csrf().disable().exceptionHandling().and()
+        http.csrf().disable().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
