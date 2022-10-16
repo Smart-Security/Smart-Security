@@ -28,11 +28,14 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> login(@RequestBody LoginRequest loginRequest){
         User user = authService.login(loginRequest);
-
-        String token = tokenProvider.generateJwtToken(loginRequest.getEmail(), user.getId());
-        AuthResponseDto response = new AuthResponseDto();
-        response.setToken(token);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        if(user != null) {
+            String token = tokenProvider.generateJwtToken(loginRequest.getEmail(), user.getId());
+            AuthResponseDto response = new AuthResponseDto();
+            response.setRole(user.getRole().toString());
+            response.setToken(token);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        return new ResponseEntity<>( new AuthResponseDto(), HttpStatus.UNAUTHORIZED);
     }
 
     @PostMapping("/register")

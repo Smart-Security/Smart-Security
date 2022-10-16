@@ -1,6 +1,7 @@
 package com.isec.gps41.SmartSecurity.service;
 
 import com.isec.gps41.SmartSecurity.constants.ROLES;
+import com.isec.gps41.SmartSecurity.exception.ParamInvalid;
 import com.isec.gps41.SmartSecurity.exception.ResourcesInvalid;
 import com.isec.gps41.SmartSecurity.model.Division;
 import com.isec.gps41.SmartSecurity.model.User;
@@ -15,7 +16,9 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -77,5 +80,16 @@ public class UserService {
         }catch (DataAccessException ex){
             throw new ResourcesInvalid( ex.getMessage() , HttpStatus.BAD_REQUEST);
         }
+    }
+
+
+    public void update(User user, Set<Division> divisions) {
+        user.setDivisions(divisions);
+        userRepository.save(user);
+    }
+
+    public User findUserByUUID(UUID userUUID) {
+        User u = userRepository.findByUuid(userUUID).orElseThrow( () -> new ParamInvalid("UUID invalid", HttpStatus.BAD_REQUEST));
+        return u;
     }
 }

@@ -40,4 +40,5 @@ public class AuthService {
 
         return userService.findByEmail(request.getEmail());
     }
+
 }

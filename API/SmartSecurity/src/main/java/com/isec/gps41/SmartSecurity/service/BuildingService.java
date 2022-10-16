@@ -3,8 +3,10 @@ package com.isec.gps41.SmartSecurity.service;
 import com.isec.gps41.SmartSecurity.exception.InvalidToken;
 import com.isec.gps41.SmartSecurity.exception.ParamInvalid;
 import com.isec.gps41.SmartSecurity.model.Division;
+import com.isec.gps41.SmartSecurity.model.User;
 import com.isec.gps41.SmartSecurity.payload.UserDto;
 import com.isec.gps41.SmartSecurity.payload.users.UserNewRequest;
+import com.isec.gps41.SmartSecurity.payload.users.UserUpdateRequest;
 import com.isec.gps41.SmartSecurity.payload.users.UsersList;
 import com.isec.gps41.SmartSecurity.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class BuildingService {
@@ -48,12 +51,23 @@ public class BuildingService {
     }
 
 
-    public UserDto newUser(UserNewRequest userRequest, String token) {
+    public UserDto newUser(UserNewRequest userNewRequest, String token) {
         long id = tokenProvider.getIdByToken(token);
-        Set<Division> divisions = divisionService.getDivisionsByUUID(userRequest.getDivisionsUUIDS());
-        userService.create(UserDto.maptoUser(userRequest.getUserDto()), divisions);
-        return userRequest.getUserDto();
+        Set<Division> divisions = divisionService.getDivisionsByUUID(userNewRequest.getDivisionsUUIDS());
+
+        userService.create(UserDto.maptoUser(userNewRequest.getUserDto()), divisions);
+        return userNewRequest.getUserDto();
     }
+
+
+    public UserUpdateRequest updateUser(UserUpdateRequest userUpdateRequest, UUID uuid) {
+        Set<Division> divisions = divisionService.getDivisionsByUUID(userUpdateRequest.getDivisionsUUIDS());
+        User user = userService.findUserByUUID(uuid);
+        userService.update(user, divisions);
+        return userUpdateRequest;
+    }
+
+
 
     private void validateToken(String auth){
         if(auth.length() < 7){

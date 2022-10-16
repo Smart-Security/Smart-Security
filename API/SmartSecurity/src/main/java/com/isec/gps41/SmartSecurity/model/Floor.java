@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -22,6 +23,6 @@ public class Floor {
 
     private int number;
 
-    @OneToMany
+    @OneToMany(mappedBy = "floor",cascade = CascadeType.ALL)
     Set<Division> divisions;
 }

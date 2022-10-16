@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -22,4 +24,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     int countAllByRoleAndRole(GrantedAuthority role1, GrantedAuthority role2);
     int countAllByRole(GrantedAuthority role1);
+
+    Optional<User> findByUuid(UUID uuid);
 }
