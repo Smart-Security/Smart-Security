@@ -1,6 +1,8 @@
 /**
  * This variable stores the base configuration that the application will use
  */
-export const environment = {
-    endpoint: 'http://localhost:8080/',
+const environment = {
+    baseUrl: 'http://localhost:8080/',
 }
+
+export default environment;

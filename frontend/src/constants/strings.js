@@ -1,5 +1,5 @@
 
-export const strings = {
+const strings = {
     companyName: "Smart Security",
     login : "Login",
     monitorization: "Monitorization",
@@ -21,3 +21,5 @@ export const strings = {
     adduser: "Add User",
     add: "Add",
 }
+
+export default strings;
