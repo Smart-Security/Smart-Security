@@ -8,6 +8,8 @@ import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -41,9 +43,15 @@ public class User {
     private String name;
 
     @Column(nullable = false)
-    private Integer age;
+    private Date birthDate;
+
+    @Size(min = 9 ,max = 15, message = "Phone size should be between 9 and 15")
+    private String phone;
 
     @ManyToMany
     Set<Division> divisions = new HashSet<>();
 
+
+    @OneToMany(mappedBy = "user")
+    Set<Register> registers = new HashSet<>();
 }

@@ -13,4 +13,7 @@ public interface DivisionRepository extends JpaRepository<Division, Long> {
 
     @Query(value = "SELECT * from divisions d WHERE d.uuid in ?1", nativeQuery = true)
     List<Division> findAllByUuidExists(List<UUID> ids);
+
+
+
 }
