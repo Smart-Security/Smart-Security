@@ -50,7 +50,7 @@ public class TestController {
         User user  = new User();
         user.setName("Daniel Fernandes");
         user.setEmail("daniel@gmail.com");
-        user.setAge(26);
+        user.setBirthDate(new Date(1996, 03, 18));
         user.setRole(ROLES.SECURITY_GUARD_ROLE);
         user.setPassword(new BCryptPasswordEncoder().encode("asd123"));
 

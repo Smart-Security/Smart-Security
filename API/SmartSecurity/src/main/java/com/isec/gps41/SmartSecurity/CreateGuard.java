@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.EntityManager;
+import java.util.Date;
 
 public class CreateGuard {
 
@@ -16,7 +17,7 @@ public class CreateGuard {
     public static void main(String[] args) {
         User user  = new User();
         user.setName("Daniel Fernandes");
-        user.setAge(26);
+        user.setBirthDate(new Date(1996, 03, 18));
         user.setRole(ROLES.SECURITY_GUARD_ROLE);
         user.setPassword(new BCryptPasswordEncoder().encode("asd123"));
 

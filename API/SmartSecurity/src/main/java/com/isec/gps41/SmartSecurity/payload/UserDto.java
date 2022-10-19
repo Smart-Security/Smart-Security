@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 
 import javax.management.relation.Role;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 @Data
@@ -22,14 +23,14 @@ public class UserDto {
 
     private String name;
 
-    private Integer age;
+    private Date birthDate;
 
     private List<DivisionDto> divisionDtos;
 
 
     public static UserDto maptoDto(User user){
         UserDto userDto = new UserDto();
-        userDto.age = user.getAge();
+        userDto.birthDate = user.getBirthDate();
         userDto.email = user.getEmail();
         userDto.name = user.getName();
         userDto.uuid = user.getUuid();
@@ -38,7 +39,7 @@ public class UserDto {
     }
     public static User maptoUser(UserDto userdto){
         User user = new User();
-        user.setAge(userdto.getAge());
+        user.setBirthDate(userdto.getBirthDate());
         user.setEmail(userdto.getEmail());;
         user.setName(userdto.getName());
         user.setUuid(userdto.getUuid());

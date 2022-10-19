@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 public class DivisionService {
@@ -39,5 +39,23 @@ public class DivisionService {
         }
 
         return d;
+    }
+
+
+    public void matchDivisions(List<UUID> listDivisionUUID, Set<Division> divisions) {
+        AtomicBoolean find = new AtomicBoolean(false);
+        divisions.forEach( division -> {
+            find.set(false);
+            for (UUID divisionsUUID : listDivisionUUID) {
+                System.out.println(division.getUuid().toString() + " -> " + divisionsUUID.toString());
+                if(divisionsUUID.equals(division.getUuid())){
+                    find.set(true);
+                    break;
+                }
+            }
+            if(!find.get()) {
+                throw new ResourcesInvalid("UUID invalid", HttpStatus.BAD_REQUEST);
+            }
+        });
     }
 }

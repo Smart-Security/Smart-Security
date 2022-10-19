@@ -13,6 +13,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class AuthService {
 
@@ -26,7 +28,7 @@ public class AuthService {
         user.setEmail(request.getEmail());
         user.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
         user.setRole(ROLES.USER_ROLE);
-        user.setAge(10);
+        user.setBirthDate(new Date(1996, 03, 18));
         user.setName("aa");
         User u =  userService.create(user);
 

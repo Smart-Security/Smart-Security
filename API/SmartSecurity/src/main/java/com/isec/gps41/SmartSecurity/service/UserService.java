@@ -97,7 +97,7 @@ public class UserService {
             user.setEmail(userDto.getEmail());
         }
         user.setName(userDto.getName());
-        user.setAge(userDto.getAge());
+        user.setBirthDate(userDto.getBirthDate());
 
         user.setDivisions(divisions);
         userRepository.save(user);
@@ -115,5 +115,10 @@ public class UserService {
 
     public User findUserById(long id) {
         return userRepository.findById(id).orElseThrow(() -> new InvalidToken("Token invalid, Please login again", HttpStatus.UNAUTHORIZED));
+    }
+
+    public User getDivisionsForUser( long id) {
+        User u = userRepository.findById(id).orElseThrow(() -> new InvalidToken("Invalid token, please login again", HttpStatus.CONFLICT));
+        return u;
     }
 }
