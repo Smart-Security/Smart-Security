@@ -1,16 +1,20 @@
 
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useNavigate } from "react-router-dom";
 import './administration.page.css'
-import { Navigate } from 'react-router-dom'
+import { useAuth } from './../../hooks/use-auth.hook'
+import { ROLETYPE } from './../../models/user.model'
 
-export default class AdministrationPage extends React.Component {
-    render() {
+export default function AdministrationPage(props) {
+    
+    const auth = useAuth();       
+    const navigate = useNavigate(); 
 
-        // Redirect if the user is not logged in
-        const isLoggedIn = false;
-        if (!isLoggedIn)
-            return <Navigate to="/" />
+    useEffect(() => {
+        // check if if the user has the required permissions, or if is authenticated
+        if (auth.user.role !== ROLETYPE.ADMIN)
+            navigate("/")
+    })
 
-        return <h1>Administration</h1>
-    }
+    return <h1>Administration</h1>
 }

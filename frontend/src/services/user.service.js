@@ -1,37 +1,42 @@
 import axios from "axios";
 import environment from "../constants/enviroment";
+import handleHTTPRequestErrorStatus from "./exceptions.service";
 
 export default class UserService {
 
-    endpoints = {
+    static endpoints = {
         login: "auth/login",
         register: "auth/register"
     };
 
     /**
      * User authentication
-     * @param {*} email 
-     * @param {*} password 
-     * @returns 
+     * @param {string} email 
+     * @param {string} password 
+     * @returns
      */
-    async login(email, password) {
-        return await axios.post(environment.baseUrl + this.endpoints.login, {
-            email: email,
-            password: password,
-        });
+    static async login(email, password) {
+        try {
+            const response = await axios.post(environment.baseUrl + this.endpoints.login, {
+                email: email,
+                password: password,
+            });
+            return response;
+        } catch (e) {
+            handleHTTPRequestErrorStatus(e)
+        }
     }
 
     /**
      * Register a new user
-     * @param {*} email 
-     * @param {*} password 
+     * @param {string} email 
+     * @param {string} password 
      * @returns 
      */
-    async register(email, password) {
+    static async register(email, password) {
         return axios.post(environment.baseUrl + this.endpoints.login, {
             email: email,
             password: password,
         })
     }
-
 }
