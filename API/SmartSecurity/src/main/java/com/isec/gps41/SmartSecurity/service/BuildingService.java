@@ -63,6 +63,7 @@ public class BuildingService {
     public UserDto newUser(UserNewRequest userNewRequest, String token) {
         long id = tokenProvider.getIdByToken(token);
         Set<Division> divisions = divisionService.getDivisionsByUUID(userNewRequest.getDivisions());
+        divisions = divisionService.filterDivisions(divisions);
         User u = UserDto.maptoUser(userNewRequest.getUser());
         u.setPassword(userNewRequest.getPassword());
         return UserDto.maptoDto(userService.create(u, divisions));
