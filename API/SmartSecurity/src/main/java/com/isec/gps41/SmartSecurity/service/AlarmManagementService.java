@@ -33,16 +33,18 @@ public class AlarmManagementService {
         long id = tokenProvider.getIdByToken(token);
         User u = userService.getDivisionsForUser(id);
         divisionService.matchDivisions(listDivisionUUID, u.getDivisions());
-        alarmService.desativateAlarmeIfIsNotAtivate(u.getDivisions(), u);
-        return u.getDivisions().stream().map(DivisionDto::mapToDto).toList();
+        Set<Division> divisions = divisionService.filterDivisions(u.getDivisions());
+        alarmService.desativateAlarmeIfIsNotAtivate(divisions, u);
+        return divisions.stream().map(DivisionDto::mapToDto).toList();
     }
 
     public List<DivisionDto> activeAlarms(List<UUID> listDivisionUUID, String token) {
         long id = tokenProvider.getIdByToken(token);
         User u = userService.getDivisionsForUser(id);
         divisionService.matchDivisions(listDivisionUUID, u.getDivisions());
-        alarmService.activeAlarms(u.getDivisions(), u);
+        Set<Division> divisions = divisionService.filterDivisions(u.getDivisions());
+        alarmService.activeAlarms(divisions, u);
 
-        return u.getDivisions().stream().map(DivisionDto::mapToDto).toList();
+        return divisions.stream().map(DivisionDto::mapToDto).toList();
     }
 }

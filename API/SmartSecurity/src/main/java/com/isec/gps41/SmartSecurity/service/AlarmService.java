@@ -26,7 +26,7 @@ public class AlarmService {
     RegisterRepository registerRepository;
 
     public void desativateAlarmeIfIsNotAtivate(Set<Division> divisions, User user) {
-        List<Register> registers = registerRepository.findAllByLeave_atIsNull();
+        List<Register> registers = registerRepository.getRegistersIfLeave_atIsNull().stream().toList();
         if(registers.stream().anyMatch(register -> register.getUser().getId() == user.getId())){
             throw new ResourcesInvalid("Já entrou nesta sala", HttpStatus.BAD_REQUEST);
         }
@@ -56,16 +56,19 @@ public class AlarmService {
     }
 
     public void activeAlarms(Set<Division> divisions, User u) {
-        List<Register> registers = registerRepository.findAllByLeave_atIsNull();
+        List<Register> registers = new java.util.ArrayList<>(registerRepository.getRegistersIfLeave_atIsNull().stream().toList());
         for (Division division : divisions) {
-            if(!division.getAlarm().isOn()){
+            List<Register> registersByDivision = registers.stream().filter(register -> register.getDivision().getId() == division.getId()).toList();
+            if(!division.getAlarm().isOn() && registersByDivision.size() <= 1){
                 division.getAlarm().setOn(true);
             }
             Register register = registers.stream().filter(reg -> reg.getDivision().getId() == division.getId()).findFirst()
                     .orElseThrow(() -> new ResourcesInvalid("Divisao nao foi ativada", HttpStatus.BAD_REQUEST));
+
             register.setLeave_at(new Date());
             registerRepository.save(register);
             alarmRepository.save(division.getAlarm());
+            registers.remove(register);
         }
     }
 }
