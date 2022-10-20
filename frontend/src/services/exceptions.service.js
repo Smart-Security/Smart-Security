@@ -1,22 +1,23 @@
 import strings from './../constants/strings';
 
 /**
- * For
+ * For each HTTP status
  */
 const HTTPSTATUSCODESMESSAGE = {
-    401 : strings.unauthorized,
-    403 : strings.forbiden,
-    404 : strings.notFound,
-    500 : strings.server,
-    generic : strings.generic,
+    401 : strings.exceptions.unauthorized,
+    403 : strings.exceptions.forbiden,
+    404 : strings.exceptions.notFound,
+    500 : strings.exceptions.server,
+    ERR_NETWORK : strings.exceptions.networkError,
+    generic : strings.exceptions.generic,
 }
 
 /**
  * Handle the error response status, and trow an exception with more context.
  * @param {AxiosError} error 
  */
-export function handleHTTPRequestErrorStatus(error) {
-    const errorMessage = HTTPSTATUSCODESMESSAGE[error.status]
-    const message = !errorMessage ? HTTPSTATUSCODESMESSAGE.generic : errorMessage;
-    throw new Error(message);
+export default function handleHTTPRequestErrorStatus(error) {
+    const errorMessage = error.response ? HTTPSTATUSCODESMESSAGE[error.response.status] : HTTPSTATUSCODESMESSAGE[error.code]
+    error.message = errorMessage ? errorMessage : HTTPSTATUSCODESMESSAGE.server;
+    throw error;
 }
