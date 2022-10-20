@@ -45,4 +45,21 @@ public class Division {
     @OneToMany(mappedBy = "division")
     Set<Register> registers = new HashSet<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Division division = (Division) o;
+
+        if (getId() != division.getId()) return false;
+        return getUuid().equals(division.getUuid());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (getId() ^ (getId() >>> 32));
+        result = 31 * result + getUuid().hashCode();
+        return result;
+    }
 }

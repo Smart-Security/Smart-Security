@@ -91,7 +91,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pQGdtYWlsLmNvbSIsImp0aSI6IjEiLCJpYXQiOjE2NjU5MzU3NjUsImV4cCI6MTY2NjIzNTc2NX0.A_1ulwHxDU6V8gMpyMjXez36kwiDYR2rOF5kgXFXqJkZk6XZXptjVQ5OP76oPHZZnEm_wpk3NsZzDuxod96fug",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pZWxAZ21haWwuY29tIiwianRpIjoiMiIsImlhdCI6MTY2NTk1MDU5MiwiZXhwIjoxNjY2MjUwNTkyfQ._avS82QbEeo5eIz2FRMJ9_EpvuDlmkpWLrHVPoViqaYMkUo7BLfI1wuNcwcVRUREF_zZ5RrZLe9rC0x5gxNvPA",
 									"type": "string"
 								}
 							]
@@ -99,7 +99,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/bo/users/8c0c045c-d9d7-4ca6-869b-7c4a21216378",
+							"raw": "http://localhost:8080/api/bo/users/d204941e-aa87-4ea4-a9e0-bfe1dbb6b1bc",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -109,7 +109,7 @@
 								"api",
 								"bo",
 								"users",
-								"8c0c045c-d9d7-4ca6-869b-7c4a21216378"
+								"d204941e-aa87-4ea4-a9e0-bfe1dbb6b1bc"
 							]
 						}
 					},
@@ -191,11 +191,11 @@
 								}
 							]
 						},
-						"method": "POST",
+						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"user\":{\n        \n        \"email\" : \"henri@gmail.com\",\n        \"name\" : \"Henr Marques\",\n        \"age\" : 24\n    },\n    \"password\": \"asd123\",\n    \"divisions\": [\n        \"8091f677-bfd5-4d99-aabe-b8096e1b77f6\",\n        \"9ea3022a-2d36-4c74-8114-5e0e757efebd\"\n    ]\n}\n",
+							"raw": "{\n    \"user\":{\n        \n        \"email\" : \"henri@gmail.com\",\n        \"name\" : \"Henr Marques\",\n        \"age\" : 24\n    },\n    \"divisions\": [\n        \"9ea3022a-2d36-4c74-8114-5e0e757efebd\",\n        \"8091f677-bfd5-4d99-aabe-b8096e1b77f6\"\n    ]\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -203,7 +203,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/bo/users/new",
+							"raw": "http://localhost:8080/api/bo/users/d204941e-aa87-4ea4-a9e0-bfe1dbb6b1bc",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -213,7 +213,7 @@
 								"api",
 								"bo",
 								"users",
-								"new"
+								"d204941e-aa87-4ea4-a9e0-bfe1dbb6b1bc"
 							]
 						}
 					},
@@ -355,7 +355,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\":\"dani@gmail.com\",\n    \"password\": \"daniel\"\n}",
+					"raw": "{\n    \"email\":\"henri@gmail.com\",\n    \"password\": \"asd123\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -379,6 +379,9 @@
 		},
 		{
 			"name": "Get your profile with token",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -403,6 +406,88 @@
 						"api",
 						"fo",
 						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Active Alarms",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJoZW5yaUBnbWFpbC5jb20iLCJqdGkiOiIzIiwiaWF0IjoxNjY2MjU1NTA5LCJleHAiOjE2NjY1NTU1MDl9.kjA67s00hfm0vfvNr_lhmAaYDCd5Fse8FzihNAuUj2xQhdjqqEpAkpcstG4GYxedz99xS3iVlyG5uD9XKQAYgA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"uuids\": [\n        \"8091f677-bfd5-4d99-aabe-b8096e1b77f6\",\n        \"9ea3022a-2d36-4c74-8114-5e0e757efebd\"\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/fo/division/activeAlarms",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"fo",
+						"division",
+						"activeAlarms"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Desactive Alarms",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJoZW5yaUBnbWFpbC5jb20iLCJqdGkiOiIzIiwiaWF0IjoxNjY2MjU1NTA5LCJleHAiOjE2NjY1NTU1MDl9.kjA67s00hfm0vfvNr_lhmAaYDCd5Fse8FzihNAuUj2xQhdjqqEpAkpcstG4GYxedz99xS3iVlyG5uD9XKQAYgA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"uuids\": [\n        \"8091f677-bfd5-4d99-aabe-b8096e1b77f6\",\n        \"9ea3022a-2d36-4c74-8114-5e0e757efebd\"\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/fo/division/desactiveAlarms",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"fo",
+						"division",
+						"desactiveAlarms"
 					]
 				}
 			},

@@ -58,4 +58,17 @@ public class DivisionService {
             }
         });
     }
+
+    public Set<Division> filterDivisions(Set<Division> divisions) {
+        Set<Division> divisionFiltered = new HashSet<>();
+
+        // This will add in divisionFiltered, divisions and your dependencies but use equals and hashcode to not duplicate data
+        for (Division division : divisions) {
+            divisionFiltered.addAll(division.getDivisionsDependsOf());
+            divisionFiltered.add(division);
+        }
+
+        return divisionFiltered;
+
+    }
 }
