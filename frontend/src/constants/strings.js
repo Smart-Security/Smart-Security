@@ -37,8 +37,8 @@ const strings = {
         forbiden: "You have no access to this area.",
         unauthorized: "You are not authorized to access this area.",
         notFound: "Page Not Found",
-        server: "Something went wrong. Try deativate alarms manually or talk with th Security Guard",
-        genric: "Check your network connection."
+        networkError: "Unable to reach the server. Check your network connection.",
+        generic: "Something went wrong. Try deativate alarms manually or talk with th Security Guard"
     }
 }
 
