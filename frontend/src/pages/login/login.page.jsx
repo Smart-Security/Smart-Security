@@ -10,6 +10,7 @@ import snackbarService from './../../services/snackbar.sercvice';
 import IconButton from '@mui/material/IconButton';
 import { useNavigate } from "react-router-dom";
 import { ROLETYPE } from "./../../models/user.model"
+import strings from '../../constants/strings';
 
 export default function LoginPage(props) {
 
@@ -80,7 +81,10 @@ export default function LoginPage(props) {
     );
 
     return <div className="login">
-        <LoginForm onFormSubmit={(email, password) => onFormSubmit(email, password)}/>
+        <div className="login-container">
+            <h2 className="form-title">{ strings.login.title }</h2>
+            <LoginForm onFormSubmit={(email, password) => onFormSubmit(email, password)}/>
+        </div>
         <Snackbar
             open={snackbar.open}
             autoHideDuration={6000}
