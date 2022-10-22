@@ -1,6 +1,5 @@
-import axios from "axios";
 import environment from "../constants/enviroment";
-import handleHTTPRequestErrorStatus from "./exceptions.service";
+import apiService from "./api.service";
 
 export default class UserService {
 
@@ -16,15 +15,10 @@ export default class UserService {
      * @returns
      */
     static async login(email, password) {
-        try {
-            const response = await axios.post(environment.baseUrl + this.endpoints.login, {
-                email: email,
-                password: password,
-            });
-            return response;
-        } catch (e) {
-            handleHTTPRequestErrorStatus(e)
-        }
+        return apiService.post(environment.baseUrl + this.endpoints.login, {
+            email: email,
+            password: password,
+        })
     }
 
     /**
@@ -34,7 +28,7 @@ export default class UserService {
      * @returns 
      */
     static async register(email, password) {
-        return axios.post(environment.baseUrl + this.endpoints.login, {
+        return apiService.post(environment.baseUrl + this.endpoints.login, {
             email: email,
             password: password,
         })
