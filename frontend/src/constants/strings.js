@@ -16,6 +16,7 @@ const strings = {
         signin: "Sign In",
         invalidEmail: "Invalid email address",
         invalidPassword: "Invalid password",
+        invalidCredentials: "Invalid email or password"
     },
     goto: {
         title: "Go To",
