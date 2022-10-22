@@ -49,6 +49,11 @@ export default function LoginForm(props) {
         setPasswordValidationResult(isPasswordsValid());
     }, [password])
 
+    const onFormSubmit = (event) => {
+        event.preventDefault(); // prevent for default redirection
+        props.onFormSubmit(email, password)
+    }
+
     const isFormNotValid = !emailValidationResult.result || !passwordValidationResult.result
 
     return (
@@ -57,29 +62,29 @@ export default function LoginForm(props) {
             sx={{
                 '& .MuiTextField-root': { width: '40ch' },
             }}
-            autoComplete="off">
-                <form>
-                    <div className="login-form-container">
-                        <TextField
-                            required
-                            label="Email address"
-                            inputProps={{ inputMode: 'email' }}
-                            onChange={(newValue) => setEmail(newValue.target.value)}
-                            error={!emailValidationResult.result}
-                            helperText={emailValidationResult.message}
-                        />
-                        <TextField
-                            required
-                            label="Password"
-                            type="password"
-                            onChange={(newValue) => setPassword(newValue.target.value)}
-                            autoComplete="current-password"
-                            error={!passwordValidationResult.result}
-                            helperText={passwordValidationResult.message}
-                        />
+            autoComplete="off"
+            onSubmit={onFormSubmit}>
+                <div className="login-form-container">
+                    <TextField
+                        required
+                        label="Email address"
+                        inputProps={{ inputMode: 'email' }}
+                        onChange={(newValue) => setEmail(newValue.target.value)}
+                        error={!emailValidationResult.result}
+                        helperText={emailValidationResult.message}
+                        autoComplete="username"
+                    />
+                    <TextField
+                        required
+                        label="Password"
+                        type="password"
+                        onChange={(newValue) => setPassword(newValue.target.value)}
+                        autoComplete="current-password"
+                        error={!passwordValidationResult.result}
+                        helperText={passwordValidationResult.message}
+                    />
 
-                        <Button disabled={isFormNotValid} className="sign-in-btn" variant="contained" onClick={() => props.onFormSubmit(email, password)}>{ strings.login.signin }</Button>
-                    </div>
-                </form>
+                    <Button disabled={isFormNotValid} type="submit" className="sign-in-btn" variant="contained" onClick={() => props.onFormSubmit(email, password)}>{ strings.login.signin }</Button>
+                </div>
         </Box>);
 }
