@@ -1,6 +1,11 @@
 import axios from 'axios';
 import strings from '../constants/strings';
 
+export const KNOWHTTPSTATUS = {
+    unauthorized: 401,
+    forbiden: 403,
+}
+
 /**
  * For each HTTP status
  */
@@ -17,7 +22,7 @@ class APIService {
     
     get = async (url, config) => {
         try {
-            await axios.get(url, config)
+            return await axios.get(url, config)
         } catch (e) {
             this.handleHTTPRequestErrorStatus(e)
         }
@@ -25,7 +30,7 @@ class APIService {
 
     post = async (url, config) => {
         try {
-            await axios.post(url, config)
+            return await axios.post(url, config)
         } catch (e) {
             this.handleHTTPRequestErrorStatus(e)
         }
@@ -33,7 +38,7 @@ class APIService {
     
     delete = async (url, config) => {
         try {
-            await axios.delete(url, config)
+            return await axios.delete(url, config)
         } catch (e) {
             this.handleHTTPRequestErrorStatus(e)
         }

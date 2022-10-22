@@ -15,7 +15,7 @@ export default class UserService {
      * @returns
      */
     static async login(email, password) {
-        return apiService.post(environment.baseUrl + this.endpoints.login, {
+        return await apiService.post(environment.baseUrl + this.endpoints.login, {
             email: email,
             password: password,
         })
@@ -28,7 +28,7 @@ export default class UserService {
      * @returns 
      */
     static async register(email, password) {
-        return apiService.post(environment.baseUrl + this.endpoints.login, {
+        return await apiService.post(environment.baseUrl + this.endpoints.login, {
             email: email,
             password: password,
         })
