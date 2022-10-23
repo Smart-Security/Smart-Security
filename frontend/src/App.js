@@ -35,8 +35,8 @@ function App() {
               element={<Navigate to="/" replace />}
             />
           </Routes>
-          <CssBaseline />
         </ErrorBoundary>
+        <CssBaseline />
       </ThemeProvider>
     </AuthProvider>
   );
