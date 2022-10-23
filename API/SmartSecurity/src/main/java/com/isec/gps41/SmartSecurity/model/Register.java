@@ -34,9 +34,12 @@ public class Register {
     private Division division;
 
     @Column(nullable = false)
-    Date entry_at;
+    Date entryAt;
 
-    Date leave_at;
+    Date leaveAt;
 
+    StateOfAlarm stateOnEntry;
+
+    StateOfAlarm stateOnLeave;
 
 }

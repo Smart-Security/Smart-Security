@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 @Service
 public class DivisionService {
@@ -42,21 +43,36 @@ public class DivisionService {
     }
 
 
-    public void matchDivisions(List<UUID> listDivisionUUID, Set<Division> divisions) {
+    public Set<Division> matchDivisions(List<UUID> listDivisionUUID, Set<Division> divisions) {
         AtomicBoolean find = new AtomicBoolean(false);
-        divisions.forEach( division -> {
+        Set<Division> divisionsToAction = new HashSet<>();
+        for (UUID divisionsUUID : listDivisionUUID) {
             find.set(false);
-            for (UUID divisionsUUID : listDivisionUUID) {
-                System.out.println(division.getUuid().toString() + " -> " + divisionsUUID.toString());
+            for (Division division : divisions) {
                 if(divisionsUUID.equals(division.getUuid())){
                     find.set(true);
+                    divisionsToAction.add(division);
                     break;
                 }
             }
             if(!find.get()) {
                 throw new ResourcesInvalid("UUID invalid", HttpStatus.BAD_REQUEST);
             }
-        });
+        }
+        return divisionsToAction;
+//        divisions.forEach( division -> {
+//            find.set(false);
+//            for (UUID divisionsUUID : listDivisionUUID) {
+//                System.out.println(division.getUuid().toString() + " -> " + divisionsUUID.toString());
+//                if(divisionsUUID.equals(division.getUuid())){
+//                    find.set(true);
+//                    break;
+//                }
+//            }
+//            if(!find.get()) {
+//                throw new ResourcesInvalid("UUID invalid", HttpStatus.BAD_REQUEST);
+//            }
+//        });
     }
 
     public Set<Division> filterDivisions(Set<Division> divisions) {
@@ -69,6 +85,15 @@ public class DivisionService {
         }
 
         return divisionFiltered;
+
+    }
+
+    public Set<Division> getAll() {
+        return new HashSet<>(divisionRepository.findAll());
+    }
+
+    public Division getDivisionByUUID(UUID uuid) {
+        return divisionRepository.findByUuid(uuid);
 
     }
 }

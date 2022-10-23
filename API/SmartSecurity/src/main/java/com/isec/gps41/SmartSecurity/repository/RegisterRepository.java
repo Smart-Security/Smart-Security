@@ -1,7 +1,9 @@
 package com.isec.gps41.SmartSecurity.repository;
 
+import com.isec.gps41.SmartSecurity.model.Division;
 import com.isec.gps41.SmartSecurity.model.Register;
 import com.isec.gps41.SmartSecurity.model.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -11,6 +13,18 @@ import java.util.List;
 
 public interface RegisterRepository extends JpaRepository<Register, Long> {
 
-    @Query("Select r from Register r where r.leave_at is null")
+    @Query("Select r from Register r where r.leaveAt is null")
     Collection<Register> getRegistersIfLeave_atIsNull();
+
+
+    List<Register> findAllByLeaveAtIsNullAndUser_id(long idUser);
+
+    List<Register> findAllByLeaveAtIsNullAndDivision_Id(long id);
+
+    int countRegistersByLeaveAtIsNullAndDivision(long divisionId);
+
+    //@Query("Select r from Register r")
+    //Collection<Register> getRegistersSortedByUserPageable(Pageable pageable);
+
+
 }

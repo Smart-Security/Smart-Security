@@ -43,6 +43,18 @@ public class UserDto {
         user.setEmail(userdto.getEmail());;
         user.setName(userdto.getName());
         user.setUuid(userdto.getUuid());
+        user.setBirthDate(userdto.getBirthDate());
         return  user;
     }
+
+    public static UserDto maptoDto2(User user){
+        UserDto userDto = new UserDto();
+        userDto.birthDate = user.getBirthDate();
+        userDto.email = user.getEmail();
+        userDto.name = user.getName();
+        userDto.uuid = user.getUuid();
+        //userDto.setDivisionDtos(user.getDivisions().stream().map(DivisionDto::mapToDto).toList());
+        return  userDto;
+    }
+
 }

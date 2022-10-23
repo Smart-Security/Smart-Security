@@ -117,7 +117,7 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new InvalidToken("Token invalid, Please login again", HttpStatus.UNAUTHORIZED));
     }
 
-    public User getDivisionsForUser( long id) {
+    public User getUserById(long id) {
         User u = userRepository.findById(id).orElseThrow(() -> new InvalidToken("Invalid token, please login again", HttpStatus.CONFLICT));
         return u;
     }

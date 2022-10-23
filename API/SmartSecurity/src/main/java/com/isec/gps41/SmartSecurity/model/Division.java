@@ -15,7 +15,7 @@ import java.util.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "divisions")
-public class Division {
+public class Division implements Comparable<Division>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +35,12 @@ public class Division {
             joinColumns={@JoinColumn(name="id")},
             inverseJoinColumns={@JoinColumn(name="dependsof_id")})
     private List<Division> divisionsDependsOf = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name="dependencies",
+            joinColumns={@JoinColumn(name="dependsof_id")},
+            inverseJoinColumns={@JoinColumn(name="id")})
+    private List<Division> divisionsAreDependentOfMe = new ArrayList<>();
 
     @OneToOne()
     private Alarm alarm;
@@ -61,5 +67,18 @@ public class Division {
         int result = (int) (getId() ^ (getId() >>> 32));
         result = 31 * result + getUuid().hashCode();
         return result;
+    }
+
+    @Override
+    public int compareTo(Division o) {
+        if(type == o.getType()){
+            return 0;
+        } else if (type == TypeDivision.COMMON_AREA) {
+            return 1;
+        }
+        else{
+            return -1;
+        }
+
     }
 }
