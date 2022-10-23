@@ -21,7 +21,9 @@ public interface RegisterRepository extends JpaRepository<Register, Long> {
 
     List<Register> findAllByLeaveAtIsNullAndDivision_Id(long id);
 
-    int countRegistersByLeaveAtIsNullAndDivision(long divisionId);
+    int countRegistersByLeaveAtIsNullAndDivision_Id(long divisionId);
+
+    List<Register> findAllByLeaveAtIsBefore(Date date, Pageable pageable);
 
     //@Query("Select r from Register r")
     //Collection<Register> getRegistersSortedByUserPageable(Pageable pageable);

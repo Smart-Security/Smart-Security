@@ -33,7 +33,7 @@ public class UsersController {
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 
-    @PostMapping("goto")
+    @PostMapping("/goto")
     public ResponseEntity<String> goTo(@RequestHeader("Authorization") String authHeader,
                                        @RequestBody ListUUID listDivisionUUID){
         String token = authHeader.substring(7);

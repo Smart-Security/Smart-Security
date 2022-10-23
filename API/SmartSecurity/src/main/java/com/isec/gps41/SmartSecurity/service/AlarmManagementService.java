@@ -81,7 +81,8 @@ public class AlarmManagementService {
         long id = tokenProvider.getIdByToken(token);
         User u = userService.getUserById(id);
         Division division = divisionService.getDivisionByUUID(uuid);
-        alarmService.goTo(u,division);
+        Set<Division> divisions = divisionService.filterDivisions(Set.of(division));
+        alarmService.goTo(u,divisions);
     }
 
     public List<DivisionDto> activeOrDeactive(List<UUID> uuids, String token) {

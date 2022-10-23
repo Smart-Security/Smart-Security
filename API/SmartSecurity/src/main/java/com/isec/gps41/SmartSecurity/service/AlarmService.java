@@ -30,7 +30,7 @@ public class AlarmService {
     public void desativateAlarmeIfIsNotAtivate(Set<Division> divisions, User user) {
         List<Register> registers = registerRepository.getRegistersIfLeave_atIsNull().stream().toList();
         StateOfAlarm state;
-        if(registers.stream().anyMatch(register -> register.getUser().getId() == user.getId())){
+        if(registers.stream().anyMatch(register -> register.getUser().getId() == user.getId() && divisions.contains(register.getDivision()))){
             throw new ResourcesInvalid("Já entrou nesta sala", HttpStatus.BAD_REQUEST);
         }
         
@@ -73,7 +73,7 @@ public class AlarmService {
             }
                 //Obtem os registos do utilizador
             if(u.getRole().equals(ROLES.USER_ROLE)) {
-                if(registers.size() <= 1){
+                if(registersByDivision.size() <= 1){
                     state = StateOfAlarm.ACTIVATE;
                 }else{
                     state = StateOfAlarm.KEEP_DEACTIVATE;
@@ -108,19 +108,14 @@ public class AlarmService {
         List<Register> registers = null;
         Pageable pageable;
         Sort sort;
-        try {
-            filter = filterProperties(filter);
-            sort = Sort.by(direction, filter);
-            pageable = PageRequest.of(pageNumber, pageSize, sort);
-            return registerRepository.findAll(pageable).toList();
-        }catch (ParamInvalid e){
-            switch (e.getMessage()){
-                case "user" -> {}
-                case "division" -> {}
-                default -> throw e;
-            }
+
+        filter = filterProperties(filter);
+        sort = Sort.by(direction, filter);
+        pageable = PageRequest.of(pageNumber, pageSize, sort);
+        if (date != null){
+            return registerRepository.findAllByLeaveAtIsBefore(date, pageable);
         }
-        return null;
+        return registerRepository.findAll(pageable).toList();
 
     }
 
@@ -128,8 +123,6 @@ public class AlarmService {
         return switch (filter.toLowerCase()){
             case "leaveat" -> "leaveAt";
             case "entryat" -> "entryAt";
-            case "user_name" -> throw new ParamInvalid("user", HttpStatus.MULTI_STATUS);
-            case "division_name" -> throw new ParamInvalid("division", HttpStatus.MULTI_STATUS);
             default -> throw new ParamInvalid("filter wrong", HttpStatus.BAD_REQUEST);
         };
     }
@@ -140,16 +133,24 @@ public class AlarmService {
         activeAlarms(divisions, u);
     }
 
-    public void goTo(User u, Division division) {
-        // TODO: TEST
-        leave(u);
-        desativateAlarmeIfIsNotAtivate(Set.of(division), u);
+    public void goTo(User u, Set<Division> divisions) {
+        Set<Division> turnOn = getDivisionsNeedTurnOn(u, divisions);
+        activeAlarms(turnOn, u);
+        desativateAlarmeIfIsNotAtivate(divisions, u);
+    }
+
+    private  Set<Division> getDivisionsNeedTurnOn(User u,  Set<Division> divisions) {
+        List<Division> divisionsAlreadyDeactivate = registerRepository.findAllByLeaveAtIsNullAndUser_id(u.getId())
+                .stream().map(Register::getDivision).toList();
+
+        Set<Division> divisionsToActive = divisionsAlreadyDeactivate.stream().filter(d -> !divisions.contains(d)).collect(Collectors.toSet());
+        divisionsToActive.forEach(d -> System.out.println(d.getName()));
+
+        divisions.removeAll(divisionsAlreadyDeactivate);
+        return divisionsToActive;
     }
 
     public void activateOrDeactivate(Set<Division> divisions, User u) {
-        //TODO: DO IT
-//        List<Division> list = new ArrayList<>(divisions.stream().toList());
-//        Collections.sort(list);
 
         divisions = divisions.stream().sorted().collect(Collectors.toCollection(LinkedHashSet::new));
 
