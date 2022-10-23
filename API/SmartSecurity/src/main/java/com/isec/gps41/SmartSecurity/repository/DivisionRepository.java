@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface DivisionRepository extends JpaRepository<Division, Long> {
 
-    List<Division> findByUuid(UUID uuid);
+    Division findByUuid(UUID uuid);
 
     @Query(value = "SELECT * from divisions d WHERE d.uuid in ?1", nativeQuery = true)
     List<Division> findAllByUuidExists(List<UUID> ids);

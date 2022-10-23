@@ -5,6 +5,7 @@ import com.isec.gps41.SmartSecurity.payload.UserDto;
 import com.isec.gps41.SmartSecurity.payload.users.UserNewRequest;
 import com.isec.gps41.SmartSecurity.payload.users.UserUpdateRequest;
 import com.isec.gps41.SmartSecurity.payload.users.UsersList;
+import com.isec.gps41.SmartSecurity.service.AlarmManagementService;
 import com.isec.gps41.SmartSecurity.service.BuildingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,9 @@ public class UserBOController {
 
     @Autowired
     private BuildingService buildingService;
+
+    @Autowired
+    private AlarmManagementService alarmManagementService;
 
 
     //"hasRole({" + ROLES.SECURITY_GUARD + "})"
@@ -67,6 +71,7 @@ public class UserBOController {
         buildingService.destroyUser(uuid);
         return new ResponseEntity<>("", HttpStatus.OK);
     }
+
 
 
 }
