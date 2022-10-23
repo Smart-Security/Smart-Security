@@ -14,6 +14,9 @@ const strings = {
         password: "Password",
         passwordPlaceholder: "Password",
         signin: "Sign In",
+        invalidEmail: "Invalid email address",
+        invalidPassword: "Invalid password",
+        invalidCredentials: "Invalid email or password"
     },
     goto: {
         title: "Go To",
@@ -38,7 +41,7 @@ const strings = {
         unauthorized: "You are not authorized to access this area.",
         notFound: "Page Not Found",
         networkError: "Unable to reach the server. Check your network connection.",
-        generic: "Something went wrong. Try deativate alarms manually or talk with th Security Guard"
+        generic: "Something went wrong. Try deativate alarms manually or talk with the Security Guard"
     }
 }
 

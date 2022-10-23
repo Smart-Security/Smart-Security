@@ -6,10 +6,12 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from './../../components/alert.component'
 import { useAuth } from './../../hooks/use-auth.hook'
 import UserService from './../../services/user.service';
-import snackbarService from './../../services/snackbar.sercvice';
+import snackbarService from './../../services/snackbar.service';
 import IconButton from '@mui/material/IconButton';
 import { useNavigate } from "react-router-dom";
 import { ROLETYPE } from "./../../models/user.model"
+import strings from '../../constants/strings';
+import { KNOWHTTPSTATUS } from './../../services/api.service'
 
 export default function LoginPage(props) {
 
@@ -19,7 +21,7 @@ export default function LoginPage(props) {
 
     /**
      * Redirect to another page according to the user role
-     * @param {ROLETYPE} role 
+     * @param {ROLETYPE} user role
      */
     const redirectByRole = (role) => {
         switch (role) {
@@ -48,8 +50,13 @@ export default function LoginPage(props) {
         try {
             const response = await UserService.login(email, password);
             await auth.login(response.data)
-            redirectByRole(auth.user.role);
+            redirectByRole(auth.user.role)
         } catch (e) {
+            
+            // if status code is unauthorized the user credentials are wrong
+            if (e?.response?.status === KNOWHTTPSTATUS.unauthorized)
+                e.message = strings.login.invalidCredentials
+
             // show snackbar with error message
             snackbarService.showError(e.message, setSnackbar)
         }
@@ -80,7 +87,10 @@ export default function LoginPage(props) {
     );
 
     return <div className="login">
-        <LoginForm onFormSubmit={(email, password) => onFormSubmit(email, password)}/>
+        <div className="login-container">
+            <h2 className="form-title">{ strings.login.title }</h2>
+            <LoginForm onFormSubmit={(email, password) => onFormSubmit(email, password)}/>
+        </div>
         <Snackbar
             open={snackbar.open}
             autoHideDuration={6000}
