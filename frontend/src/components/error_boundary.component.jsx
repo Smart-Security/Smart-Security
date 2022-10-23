@@ -1,4 +1,5 @@
 import React from "react";
+import Container from '@mui/material/Container';
 
 export default class ErrorBoundary extends React.Component {
 
@@ -20,7 +21,9 @@ export default class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return <h1>Something went wrong.</h1>;
+      return <Container>
+        <h1>Something went wrong.</h1>
+      </Container>;
     }
 
     return this.props.children; 
