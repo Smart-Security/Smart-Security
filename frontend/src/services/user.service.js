@@ -5,7 +5,8 @@ export default class UserService {
 
     static endpoints = {
         login: "auth/login",
-        register: "auth/register"
+        register: "auth/register",
+        profile: "api/fo/users"
     };
 
     /**
@@ -31,6 +32,17 @@ export default class UserService {
         return await apiService.post(environment.baseUrl + this.endpoints.login, {
             email: email,
             password: password,
+        })
+    }
+    
+    /**
+     * Loads the user logged information
+     * @param {*} user logged user
+     * @returns 
+     */
+    static async profileInformation(user) {
+        return await apiService.get(environment.baseUrl + this.endpoints.profile, {
+            headers: { 'Authorization' : `${user.tokenType} ${user.token}` }
         })
     }
 }
