@@ -37,12 +37,12 @@ export default class UserService {
     
     /**
      * Loads the user logged information
-     * @param {*} token authentication token
+     * @param {*} user logged user
      * @returns 
      */
-    static async profileInformation(auth) {
+    static async profileInformation(user) {
         return await apiService.get(environment.baseUrl + this.endpoints.profile, {
-            headers: { 'Authorization' : `${auth.tokenType} ${auth.token}` }
+            headers: { 'Authorization' : `${user.tokenType} ${user.token}` }
         })
     }
 }

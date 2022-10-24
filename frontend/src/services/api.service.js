@@ -28,9 +28,9 @@ class APIService {
         }
     }
 
-    post = async (url, config) => {
+    post = async (url, data, config) => {
         try {
-            return await axios.post(url, config)
+            return await axios.post(url, data, config)
         } catch (e) {
             this.handleHTTPRequestErrorStatus(e)
         }
