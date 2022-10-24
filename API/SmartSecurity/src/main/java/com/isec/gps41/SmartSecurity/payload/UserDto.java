@@ -5,6 +5,7 @@ import com.isec.gps41.SmartSecurity.model.User;
 import com.isec.gps41.SmartSecurity.payload.division.DivisionDto;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 
 import javax.management.relation.Role;
@@ -20,12 +21,13 @@ public class UserDto {
     private String email;
 
 
-
     private String name;
 
     private Date birthDate;
 
-    private List<DivisionDto> divisionDtos;
+    private List<DivisionDto> divisions;
+
+    private String role;
 
 
     public static UserDto maptoDto(User user){
@@ -34,7 +36,8 @@ public class UserDto {
         userDto.email = user.getEmail();
         userDto.name = user.getName();
         userDto.uuid = user.getUuid();
-        userDto.setDivisionDtos(user.getDivisions().stream().map(DivisionDto::mapToDto).toList());
+        userDto.setDivisions(user.getDivisions().stream().map(DivisionDto::mapToDto).toList());
+        userDto.setRole(user.getRole().toString());
         return  userDto;
     }
     public static User maptoUser(UserDto userdto){
