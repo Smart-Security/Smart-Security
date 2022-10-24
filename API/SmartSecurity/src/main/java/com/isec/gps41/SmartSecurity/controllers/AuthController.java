@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -59,7 +58,5 @@ public class AuthController {
         response.setToken(token);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-
-
 
 }
