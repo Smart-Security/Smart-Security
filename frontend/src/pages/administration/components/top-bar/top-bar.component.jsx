@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect} from 'react';
 import AppBar from '@mui/material/AppBar'
 import PersonIcon from '@mui/icons-material/Person'
@@ -13,22 +14,25 @@ export default function TopBar(props){
     const [profile, setProfile] = useState(null)
     const auth = useAuth()
 
-    /**
-     * Request the api to provide the information of the current user logged.
-     */
-    const loadProfile = async () => {
-        try {
-            const response = await UserService.profileInformation(auth)
-            setProfile(response.data)
-        } catch(e) {
-            if (props.onError) props.onError(e)
-        }
-    }    
-
     // when component loads for the first time, load 
     useEffect(() => {
+
+        /**
+         * Request the api to provide the information of the current user logged.
+         */
+        const loadProfile = async () => {
+            try {
+                const response = await UserService.profileInformation(auth.user)
+                setProfile(response.data)
+            } catch(e) {
+                // if (props.onError) props.onError(e)
+                // todo show message
+                console.error(e);
+            }
+        }    
+
         loadProfile()
-    })
+    }, [])
 
     const profileLoadingIdicator = (
         <div className="profile-information">

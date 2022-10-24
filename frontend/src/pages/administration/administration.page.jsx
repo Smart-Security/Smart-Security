@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom"
@@ -41,7 +42,7 @@ export default function AdministrationPage() {
         // check if if the user has the required permissions, or if is authenticated
         if (auth.user.role !== ROLETYPE.ADMIN)
             navigate("/")
-    })
+    }, [])
 
     const sideMenuItems = [
         {
@@ -109,17 +110,16 @@ export default function AdministrationPage() {
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <Toolbar />
                 { contentViews[selectedView] }
+                <Snackbar
+                    open={snackbar.open}
+                    autoHideDuration={6000}
+                    onClose={handleClose}
+                    action={action}>
+                    <Alert onClose={handleClose} severity={snackbar.severity}>
+                        {snackbar.message}
+                    </Alert>
+                </Snackbar>
             </Box>
-
-            <Snackbar
-                open={snackbar.open}
-                autoHideDuration={6000}
-                onClose={handleClose}
-                action={action}>
-                <Alert onClose={handleClose} severity={snackbar.severity}>
-                    {snackbar.message}
-                </Alert>
-            </Snackbar>
         </Box>
     );
 }

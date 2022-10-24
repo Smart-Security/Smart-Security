@@ -7,6 +7,8 @@ import List from '@mui/material/List';
 import Drawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
+import ListSubheader from '@mui/material/ListSubheader';
+import strings from '../../../../constants/strings';
 
 const DRAWERWIDTH = 240;
 
@@ -22,6 +24,9 @@ export default function SideMenu(props) {
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
             <List>
+                <ListSubheader>
+                    { strings.adminstration.managenment }
+                </ListSubheader>
                 {
                     props.menuItems.map((item) => {
                         
@@ -39,7 +44,6 @@ export default function SideMenu(props) {
                             </ListItem>
                         )
                     }
-                       
                     )
                 }
             </List>
