@@ -43,7 +43,7 @@ public class BuildingService {
         List<UserDto> dtos =  userService.getUsers(numPage, size, ord, true).stream().map(UserDto::maptoDto).toList();
         UsersList response = new UsersList();
         response.setLength(dtos.size());
-        response.setUserDtos(dtos);
+        response.setUsers(dtos);
         int max = userService.getMaxUsers(true);
         response.setMaxUsers(max);
         boolean isLast = size*(numPage+1) + numPage >= max;

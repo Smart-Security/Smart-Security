@@ -11,5 +11,5 @@ public class UsersList {
     private boolean isLast;
     private int maxUsers;
     private int length;
-    private List<UserDto> userDtos;
+    private List<UserDto> users;
 }
