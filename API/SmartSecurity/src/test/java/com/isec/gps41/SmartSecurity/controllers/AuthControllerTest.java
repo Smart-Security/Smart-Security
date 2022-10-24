@@ -1,31 +1,43 @@
 package com.isec.gps41.SmartSecurity.controllers;
 
-import com.isec.gps41.SmartSecurity.repository.UserRepository;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
+import com.isec.gps41.SmartSecurity.payload.AuthResponseDto;
+import com.isec.gps41.SmartSecurity.payload.LoginRequest;
+import org.junit.Before;
+import org.junit.Test;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-@SpringBootTest
-public class AuthControllerTest {
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+public class AuthControllerTest extends AbstractTest{
 
-
-    @MockBean
-    private UserRepository userRepository;
-//
-//    @Autowired
-//    private MockMvc mockMvc;
-
+    @Override
+    @Before
+    public void setUp() {
+        super.setUp();
+    }
 
 
     @Test
-    @DisplayName("Should login")
-    public void doLogin(){
+    public void doLogin() throws Exception{
+        String uri = "/auth/login";
+        LoginRequest request = new LoginRequest("daniel@gmail.com", "asd123");
+        String inputJson = super.mapToJson(request);
+
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson)).andReturn();
+
+        int status = mvcResult.getResponse().getStatus();
+        assertEquals(200, status);
+        String content = mvcResult.getResponse().getContentAsString();
+        AuthResponseDto authResponse = super.mapFromJson(content, AuthResponseDto.class);
+        assertEquals("Bearer", authResponse.getTokenType());
+        assertTrue(authResponse.getToken().length() > 1);
 
     }
+
 }
