@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom"
 import './administration.page.css'
 import { useAuth } from './../../hooks/use-auth.hook'
-import { ROLETYPE } from './../../models/user.model'
+import { ROLETYPE } from './../../models/authentication.model'
 import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
 import strings from '../../constants/strings'
@@ -100,13 +100,11 @@ export default function AdministrationPage() {
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <TopBar />
-        
             <SideMenu 
                 menuItems={sideMenuItems} 
                 onMenuSelection={setSelectedView} 
                 currentSelected={selectedView} 
                 onError={handleError}/>
-
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <Toolbar />
                 { contentViews[selectedView] }
