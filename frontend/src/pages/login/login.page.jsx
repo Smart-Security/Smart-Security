@@ -8,7 +8,7 @@ import UserService from './../../services/user.service';
 import snackbarService from './../../services/snackbar.service';
 import IconButton from '@mui/material/IconButton';
 import { useNavigate } from "react-router-dom";
-import { ROLETYPE } from "./../../models/user.model"
+import { ROLETYPE } from "./../../models/authentication.model"
 import strings from '../../constants/strings';
 import { KNOWHTTPSTATUS } from './../../services/api.service'
 
