@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 
 //@WebFilter(urlPatterns = {"/client/*"})
 @Component
@@ -36,11 +37,13 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     @Autowired
     JwtTokenProvider tokenProvider;
 
+    List<String> urlToPermit = new ArrayList<>(List.of("/auth/login", "/auth/register", "/test/buildDB"));
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         String authHeader = request.getHeader("Authorization");
-        if(!request.getRequestURI().equals("/auth/login") && !request.getRequestURI().equals("/auth/register")) {
+        if(!urlToPermit.contains(request.getRequestURI())) {
 
             if(authHeader == null || authHeader.length() < 7){
                 throw new InvalidToken("Invalid token", HttpStatus.UNAUTHORIZED);
@@ -62,7 +65,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             }
         }else{
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    "asd", null, new ArrayList<>()
+                    "permit", null, new ArrayList<>()
             );
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
