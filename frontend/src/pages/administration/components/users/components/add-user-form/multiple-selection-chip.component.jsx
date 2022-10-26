@@ -8,6 +8,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 import strings from "../../../../../../constants/strings";
+import { ListSubheader } from "@mui/material";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -33,18 +34,34 @@ const names = [
   "Kelly Snyder",
 ];
 
-function getStyles(name, personName, theme) {
+function getStyles(division, selectedDivisions, theme) {
+  // console.log(division, selectedDivisions, theme.typography);
+
+  const isDivisionNotSelected = false;
+  /*selectedDivisions
+      .map((selectedDivision) => selectedDivision.uuid)
+      .indexOf(division.uuid) === -1;*/
   return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
+    fontWeight: isDivisionNotSelected
+      ? theme.typography.fontWeightRegular
+      : theme.typography.fontWeightMedium,
   };
 }
 
-export default function MultipleSelectChip() {
+export default function MultipleSelectChip(props) {
   const theme = useTheme();
   const [personName, setPersonName] = React.useState([]);
+
+  const building = props.divisions;
+  const [divisionSelected, setDivisionSelected] = React.useState([]);
+
+  const handleDivisionSelected = (event) => {
+    const {
+      target: { value },
+    } = event;
+    console.log(value);
+    setDivisionSelected(value);
+  };
 
   const handleChange = (event) => {
     const {
@@ -66,27 +83,50 @@ export default function MultipleSelectChip() {
           labelId="demo-multiple-chip-label"
           id="demo-multiple-chip"
           multiple
-          value={personName}
-          onChange={handleChange}
+          value={divisionSelected}
+          onChange={handleDivisionSelected}
           input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
           renderValue={(selected) => (
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-              {selected.map((value) => (
-                <Chip key={value} label={value} />
+              {selected.map((divison) => (
+                <Chip key={divison.uuid} label={divison.name} />
               ))}
             </Box>
           )}
           MenuProps={MenuProps}
         >
-          {names.map((name) => (
-            <MenuItem
-              key={name}
-              value={name}
-              style={getStyles(name, personName, theme)}
-            >
-              {name}
-            </MenuItem>
-          ))}
+          {building.map(
+            (floor) =>
+              floor.divisions
+                .filter((division) => division.type !== "COMMON_AREA")
+                .map((division) => (
+                  <MenuItem
+                    key={division.uuid}
+                    value={division}
+                    style={getStyles(division, divisionSelected, theme)}
+                  >
+                    {division.name}
+                  </MenuItem>
+                ))
+            // {
+            // return (
+            //   <div key={`${strings.floor} ${floor.number}`}>
+            //     <ListSubheader>
+            //       {`${strings.floor} ${floor.number}`}
+            //     </ListSubheader>
+            //     {floor.divisions.map((division, index) => (
+            //       <MenuItem
+            //         key={`${floor.number} ${division.name}`}
+            //         value={division}
+            //         style={getStyles(division.name, divisionSelected, theme)}
+            //       >
+            //         {division.name}
+            //       </MenuItem>
+            //     ))}
+            //   </div>
+            // );
+            // }
+          )}
         </Select>
       </FormControl>
     </div>
