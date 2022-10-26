@@ -37,6 +37,8 @@ const strings = {
                 email: "Email",
                 role: "Role",
                 access: "Access",
+                details: "Details",
+                birthDate: "Birth Date"
             }
         },
         monitorization: {
