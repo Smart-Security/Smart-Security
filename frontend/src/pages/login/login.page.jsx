@@ -8,7 +8,8 @@ import UserService from './../../services/user.service';
 import snackbarService from './../../services/snackbar.service';
 import IconButton from '@mui/material/IconButton';
 import { useNavigate } from "react-router-dom";
-import { ROLETYPE } from "./../../models/authentication.model"
+import { ROLETYPE } from "./../../models/role-type.model"
+import Authentication from "./../../models/authentication.model"
 import strings from '../../constants/strings';
 import { KNOWHTTPSTATUS } from './../../services/api.service'
 
@@ -47,7 +48,7 @@ export default function LoginPage(props) {
      */
     const onFormSubmit = async (email, password) => {
         try {
-            const response = await UserService.login(email, password);
+            const response = await UserService.login(new Authentication(email, password));
             await auth.login(response.data)
             redirectByRole(auth.user.role)
         } catch (e) {
