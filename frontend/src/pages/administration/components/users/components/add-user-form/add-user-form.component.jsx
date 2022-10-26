@@ -12,8 +12,9 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import moment from "moment";
 import MultipleSelectChip from "./multiple-selection-chip.component";
 import { KNOWHTTPSTATUS } from "./../../../../../../services/api.service";
+import AddUser from "./../../../../../../models/add-user.model";
 
-export default function AddUser(props) {
+export default function AddUserForm(props) {
   const auth = useAuth();
 
   const [building, setBuilding] = useState(null);
@@ -22,6 +23,7 @@ export default function AddUser(props) {
   const [birthdate, setBirthDate] = useState(moment());
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [divisionsSelected, setDivisionsSelected] = useState("");
 
   //const [snackbar, setSnackbar] = useState(snackbarService._getInitialState());
 
@@ -38,6 +40,9 @@ export default function AddUser(props) {
     validationReturn(false, "")
   );
   const [nameValidationResult, setNameValidationResult] = useState(
+    validationReturn(false, "")
+  );
+  const [divisionsValidationResult, setDivisionsValidationResult] = useState(
     validationReturn(false, "")
   );
 
@@ -118,6 +123,17 @@ export default function AddUser(props) {
     setNameValidationResult(isNameValid());
   }, [name]);
 
+  useEffect(() => {
+    const isDivisionsEmpty = () => {
+      const divisionsEmpty = divisionsSelected.length > 0;
+      return validationReturn(
+        divisionsEmpty,
+        divisionsEmpty ? "" : strings.adminstration.users.selectedDivisions
+      );
+    };
+    setDivisionsValidationResult(isDivisionsEmpty());
+  }, [divisionsSelected]);
+
   const isFormNotValid =
     !emailValidationResult.result || !passwordValidationResult.result;
 
@@ -126,15 +142,24 @@ export default function AddUser(props) {
    */
   const onFormSubmit = async () => {
     try {
-      //TODO: Get the selected divisions
-      const user = new AddUser(email, name, birthdate, password);
+      //Get the selected divisions uuid's
+      console.log(divisionsSelected);
+      const user = new AddUser(
+        email,
+        name,
+        birthdate,
+        password,
+        divisionsSelected.map((division) => division.uuid)
+      );
+      console.log(divisionsSelected);
       const response = await UserManagementService.addUser(auth.user, user);
-      await auth.login(response.data);
+      console.log(response.data);
     } catch (e) {
       // if status code is unauthorized the user credentials are wrong
       if (e?.response?.status === KNOWHTTPSTATUS.unauthorized)
         e.message = strings.login.invalidCredentials;
 
+      console.log(e);
       // show snackbar with error message
       //snackbarService.showError(e.message, setSnackbar);
     }
@@ -178,8 +203,15 @@ export default function AddUser(props) {
         helperText={passwordValidationResult.message}
       />
       {building ? (
-        <MultipleSelectChip divisions={building.floorDtos} />
+        <MultipleSelectChip
+          divisions={building.floorDtos}
+          onSelectedDivisions={(selectedDivisions) =>
+            setDivisionsSelected(selectedDivisions)
+          }
+          helperText={divisionsValidationResult.message}
+        />
       ) : (
+        //TODO add loading indicator
         <div></div>
       )}
       <Button
@@ -205,7 +237,7 @@ export function AddUserDialog(props) {
   return (
     <Dialog onClose={handleClose} open={open}>
       <DialogTitle>{strings.adminstration.users.adduser}</DialogTitle>
-      <AddUser />
+      <AddUserForm />
     </Dialog>
   );
 }
