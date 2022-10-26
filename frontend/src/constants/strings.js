@@ -7,6 +7,10 @@ const strings = {
     groundFloor: "Ground Floor",
     leaveBuilding: "Leave Building",
     logout: "Logout",
+    roles: {
+        admin: "Security Guard",
+        user: "Employee",
+    },
     login: {
         title: "Login",
         email: "Email address",
@@ -28,6 +32,14 @@ const strings = {
             role: "Role",
             adduser: "Add User",
             add: "Add",
+            list: {
+                name: "Name",
+                email: "Email",
+                role: "Role",
+                access: "Access",
+                details: "Details",
+                birthDate: "Birth Date"
+            }
         },
         monitorization: {
             title: "Monitorization",

@@ -1,0 +1,18 @@
+
+.user-detail-fields-container {
+    display: grid;
+    row-gap: 16px;
+}
+
+.user-detailed-field {
+    display: grid;
+}
+
+.user-detailed-field .title {
+    font-weight: medium;
+}
+
+.user-detailed-field-access {
+    display: grid;
+    row-gap: 8px;
+}
