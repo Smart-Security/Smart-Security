@@ -50,18 +50,12 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             }
 
             String token = authHeader.substring(7);
-            System.out.println("Fora");
             if(tokenProvider.validateToken(token)){
                 org.springframework.security.core.userdetails.UserDetails user;
                 try {
                     System.out.println("Dentro do try catch");
                     String email = tokenProvider.getEmailByToken(token);
                     user = userDetails.loadUserByUsername(email);
-                    if(user == null){
-                        System.out.println("User e null");
-                    }else {
-                        System.out.println("User nao e null");
-                    }
                 }catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e){
                     throw new InvalidToken("Invalid token", HttpStatus.UNAUTHORIZED);
                 }
