@@ -50,7 +50,6 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             }
 
             String token = authHeader.substring(7);
-
             if(tokenProvider.validateToken(token)){
                 org.springframework.security.core.userdetails.UserDetails user;
                 try {
