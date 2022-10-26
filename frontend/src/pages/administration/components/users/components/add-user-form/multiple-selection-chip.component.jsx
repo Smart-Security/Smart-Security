@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
@@ -21,26 +21,9 @@ const MenuProps = {
   },
 };
 
-const names = [
-  "Oliver Hansen",
-  "Van Henry",
-  "April Tucker",
-  "Ralph Hubbard",
-  "Omar Alexander",
-  "Carlos Abbott",
-  "Miriam Wagner",
-  "Bradley Wilkerson",
-  "Virginia Andrews",
-  "Kelly Snyder",
-];
-
 function getStyles(division, selectedDivisions, theme) {
-  // console.log(division, selectedDivisions, theme.typography);
-
   const isDivisionNotSelected = false;
-  /*selectedDivisions
-      .map((selectedDivision) => selectedDivision.uuid)
-      .indexOf(division.uuid) === -1;*/
+
   return {
     fontWeight: isDivisionNotSelected
       ? theme.typography.fontWeightRegular
@@ -53,15 +36,20 @@ export default function MultipleSelectChip(props) {
   const [personName, setPersonName] = React.useState([]);
 
   const building = props.divisions;
+
   const [divisionSelected, setDivisionSelected] = React.useState([]);
 
   const handleDivisionSelected = (event) => {
     const {
       target: { value },
     } = event;
-    console.log(value);
     setDivisionSelected(value);
   };
+
+  useEffect(() => {
+    props.onSelectedDivisions(divisionSelected);
+    console.log(divisionSelected);
+  }, [divisionSelected]);
 
   const handleChange = (event) => {
     const {
