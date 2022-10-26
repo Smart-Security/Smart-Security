@@ -12,17 +12,13 @@
 // }
 
 export default class AddUser {
-
-    constructor(email, name, age, password, divisions) {
-        this.user = {
-            email: email,
-            name: name,
-            age: age,
-        }
-        this.password = password
-        this.division = divisions
-    }
-    
+  constructor(email, name, birthDate, password, divisions) {
+    this.user = {
+      email: email,
+      name: name,
+      birthDate: birthDate,
+    };
+    this.password = password;
+    this.division = divisions;
+  }
 }
-
-
