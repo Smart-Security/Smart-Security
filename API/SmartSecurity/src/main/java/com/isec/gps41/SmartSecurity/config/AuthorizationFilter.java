@@ -53,7 +53,6 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             if(tokenProvider.validateToken(token)){
                 org.springframework.security.core.userdetails.UserDetails user;
                 try {
-                    System.out.println("Dentro do try catch");
                     String email = tokenProvider.getEmailByToken(token);
                     user = userDetails.loadUserByUsername(email);
                 }catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e){
