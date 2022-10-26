@@ -18,14 +18,11 @@ export default function AddUserForm(props) {
   const auth = useAuth();
 
   const [building, setBuilding] = useState(null);
-  //const [isLoading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [birthdate, setBirthDate] = useState(moment());
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [divisionsSelected, setDivisionsSelected] = useState("");
-
-  //const [snackbar, setSnackbar] = useState(snackbarService._getInitialState());
+  const [divisionsSelected, setDivisionsSelected] = useState(null);
 
   // builds the base strucure to the
   const validationReturn = (result, message) => {
@@ -46,19 +43,7 @@ export default function AddUserForm(props) {
     validationReturn(false, "")
   );
 
-  /**
-   * Event on snackbar close event
-   * @param {*} event
-   * @param {*} reason
-   * @returns void
-   */
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") return;
-
-    //snackbarService.hide(snackbar, setSnackbar);
-  };
-
-  // when component loads for the first time, load
+  // when component loads for the first time, load the building
   useEffect(() => {
     /**
      * Request the api to provide the information of the build floor composition.
@@ -67,9 +52,7 @@ export default function AddUserForm(props) {
       try {
         const response = await UserManagementService.getBuilding(auth.user);
         setBuilding(response.data);
-        //setLoading(false);
       } catch (e) {
-        // if (props.onError) props.onError(e)
         // todo show message
         console.error(e);
       }
@@ -77,6 +60,9 @@ export default function AddUserForm(props) {
     loadBuilding();
   }, []);
 
+  /**
+   * when email changes validate the email and update the email error state
+   */
   useEffect(() => {
     /**
      * Validates the email fields has a valid input.
@@ -94,11 +80,19 @@ export default function AddUserForm(props) {
     setEmailValidationResult(isEmailValid());
   }, [email]);
 
+  /**
+   * Change the birthDate to the selected birthdate on the DesktopDatePicker
+   * @param {*} newValue
+   */
   const handleBirthDateChange = (newValue) => {
     setBirthDate(newValue);
   };
 
+  /**
+   * when password changes validate it and update the password error state
+   */
   useEffect(() => {
+    // Validate if the passsword is not empty
     const isPasswordsValid = () => {
       const passwordValid = password.length > 0;
       return validationReturn(
@@ -111,7 +105,11 @@ export default function AddUserForm(props) {
     setPasswordValidationResult(isPasswordsValid());
   }, [password]);
 
+  /**
+   * when name changes validate it and update the name error state
+   */
   useEffect(() => {
+    // Validate if the name is not empty
     const isNameValid = () => {
       const nameValid = name.length > 0;
       return validationReturn(
@@ -123,17 +121,21 @@ export default function AddUserForm(props) {
     setNameValidationResult(isNameValid());
   }, [name]);
 
+  /**
+   * when selected divisions changes validate them and update the divisions selected error state
+   */
   useEffect(() => {
     const isDivisionsEmpty = () => {
-      const divisionsEmpty = divisionsSelected.length > 0;
+      const divisionsEmpty = divisionsSelected == null;
       return validationReturn(
         divisionsEmpty,
-        divisionsEmpty ? "" : strings.adminstration.users.selectedDivisions
+        divisionsEmpty ? "" : "Select divisions"
       );
     };
     setDivisionsValidationResult(isDivisionsEmpty());
   }, [divisionsSelected]);
 
+  // Check if form is valid (password and email completed)
   const isFormNotValid =
     !emailValidationResult.result || !passwordValidationResult.result;
 
@@ -142,32 +144,26 @@ export default function AddUserForm(props) {
    */
   const onFormSubmit = async () => {
     try {
-      //Get the selected divisions uuid's
-      console.log(divisionsSelected);
+      // Create the user using the email, name, birthdate, password and the divisions selected uuids
       const user = new AddUser(
         email,
         name,
         birthdate,
         password,
+        //Get the selected divisions uuid's
         divisionsSelected.map((division) => division.uuid)
       );
-      console.log(divisionsSelected);
+
       const response = await UserManagementService.addUser(auth.user, user);
-      console.log(response.data);
     } catch (e) {
       // if status code is unauthorized the user credentials are wrong
       if (e?.response?.status === KNOWHTTPSTATUS.unauthorized)
         e.message = strings.login.invalidCredentials;
 
       console.log(e);
-      // show snackbar with error message
-      //snackbarService.showError(e.message, setSnackbar);
     }
   };
 
-  // if (isLoading) {
-  //   // set the loading icon
-  // } else {
   return (
     <Box>
       <TextField
@@ -208,7 +204,6 @@ export default function AddUserForm(props) {
           onSelectedDivisions={(selectedDivisions) =>
             setDivisionsSelected(selectedDivisions)
           }
-          helperText={divisionsValidationResult.message}
         />
       ) : (
         //TODO add loading indicator
