@@ -85,6 +85,7 @@ public class BuildingBOControllerTest extends AuthenticationSecurityGuardTest{
         assertEquals(200, status);
         ResultOfDesativeAtiveAlarms result = super.mapFromJson(mvcResult.getResponse().getContentAsString(), ResultOfDesativeAtiveAlarms.class);
         assertTrue(result.getDivisions().size() > 1);
+
         for (DivisionDto division : result.getDivisions()) {
             assertFalse(changeTest || division.isOn());
         }
