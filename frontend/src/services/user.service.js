@@ -11,15 +11,11 @@ export default class UserService {
 
     /**
      * User authentication
-     * @param {string} email 
-     * @param {string} password 
+     * @param {Authentication} authentication 
      * @returns
      */
-    static async login(email, password) {
-        return await apiService.post(environment.baseUrl + this.endpoints.login, {
-            email: email,
-            password: password,
-        })
+    static async login(authentication) {
+        return await apiService.post(environment.baseUrl + this.endpoints.login, authentication)
     }
 
     /**
