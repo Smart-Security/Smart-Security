@@ -31,6 +31,8 @@ const strings = {
       name: "Name",
       age: "Age",
       birthdate: "Birth Date",
+      submit: "Submit",
+      insertName: "Insert Name",
     },
     monitorization: {
       title: "Monitorization",
