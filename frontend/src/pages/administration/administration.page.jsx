@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom"
 import './administration.page.css'
 import { useAuth } from './../../hooks/use-auth.hook'
-import { ROLETYPE } from './../../models/authentication.model'
+import { ROLETYPE } from './../../models/role-type.model'
 import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
 import strings from '../../constants/strings'
