@@ -6,10 +6,30 @@ import MonitorizationService from "./../../../../services/monitorization.service
 import { DataGrid } from "@mui/x-data-grid";
 import moment from "moment";
 import "./monitorization.component.css";
+import { ALARM_STATES } from "./../../../../models/alarm-state.model";
 
 export default function Monitorization(props) {
     const auth = useAuth();
 
+    const alarmsStateMap = {};
+    alarmsStateMap[ALARM_STATES.activate] =
+        strings.adminstration.monitorization.list.alarmStates.active;
+    alarmsStateMap[ALARM_STATES.deactivate] =
+        strings.adminstration.monitorization.list.alarmStates.deactive;
+    alarmsStateMap[ALARM_STATES.deactivateBySecurityGuard] =
+        strings.adminstration.monitorization.list.alarmStates.deactivatedBySecurityGuard;
+    alarmsStateMap[ALARM_STATES.activateBySecurityGuard] =
+        strings.adminstration.monitorization.list.alarmStates.activatedBySecurityGuard;
+    alarmsStateMap[ALARM_STATES.keepActivate] =
+        strings.adminstration.monitorization.list.alarmStates.keepActive;
+    alarmsStateMap[ALARM_STATES.keepDeactivate] =
+        strings.adminstration.monitorization.list.alarmStates.keepDeactive;
+
+    /**
+     * Format Java Date string
+     * @param {*} dateString
+     * @returns
+     */
     const getDateFotmatted = (dateString) =>
         moment(dateString).format("DD/MM/YYYY HH:mm:ss");
 
@@ -46,6 +66,24 @@ export default function Monitorization(props) {
             headerName: strings.adminstration.monitorization.list.access,
             flex: 1,
             valueGetter: (params) => params.row.division.name,
+        },
+        {
+            field: "stateOnEntry",
+            headerName: strings.adminstration.monitorization.list.stateEntry,
+            flex: 1,
+            valueGetter: (params) =>
+                params.row.stateOnEntry
+                    ? alarmsStateMap[params.row.stateOnEntry]
+                    : "-",
+        },
+        {
+            field: "stateOnLeave",
+            headerName: strings.adminstration.monitorization.list.stateLeave,
+            flex: 1,
+            valueGetter: (params) =>
+                params.row.stateOnLeave
+                    ? alarmsStateMap[params.row.stateOnLeave]
+                    : "-",
         },
     ];
 
