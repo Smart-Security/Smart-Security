@@ -13,6 +13,8 @@ import moment from "moment";
 import MultipleSelectChip from "./multiple-selection-chip.component";
 import { KNOWHTTPSTATUS } from "./../../../../../../services/api.service";
 import AddUser from "./../../../../../../models/add-user.model";
+import { CircularProgress } from "@mui/material";
+import { Skeleton } from "@mui/material";
 
 export default function AddUserForm(props) {
   const auth = useAuth();
@@ -206,8 +208,7 @@ export default function AddUserForm(props) {
           }
         />
       ) : (
-        //TODO add loading indicator
-        <div></div>
+        <Skeleton variant="rounded" height={60} sx={{ m: 1, width: 300 }} />
       )}
       <Button
         disabled={isFormNotValid}
@@ -216,7 +217,7 @@ export default function AddUserForm(props) {
         variant="contained"
         onClick={() => onFormSubmit()}
       >
-        {strings.login.signin}
+        {strings.adminstration.users.submit}
       </Button>
     </Box>
   );
