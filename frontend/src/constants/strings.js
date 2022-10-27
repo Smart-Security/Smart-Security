@@ -48,6 +48,16 @@ const strings = {
                 entryAt: "Entry At",
                 leaveAt: "Leave At",
                 access: "Access",
+                stateEntry: "State on Entry",
+                stateLeave: "State on Leave",
+                alarmStates: {
+                    deactive: "Deactived",
+                    active: "Actived",
+                    keepActive: "Kept Active",
+                    keepDeactive: "Kept Deactive",
+                    deactivatedBySecurityGuard: "Deactivated by Security Guard",
+                    activatedBySecurityGuard: "Activated by Security Guard",
+                },
             },
         },
         alarms: {
