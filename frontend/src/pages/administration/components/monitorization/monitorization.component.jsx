@@ -6,10 +6,74 @@ import MonitorizationService from "./../../../../services/monitorization.service
 import { DataGrid } from "@mui/x-data-grid";
 import moment from "moment";
 import "./monitorization.component.css";
+import { ALARM_STATES } from "./../../../../models/alarm-state.model";
+import IconButton from "@mui/material/IconButton";
+import ReadMoreIcon from "@mui/icons-material/ReadMore";
+import Dialog from "@mui/material/Dialog";
+import MonitorizationDetail from "./components/monitorization-details/monitorization-details.component";
+import Snackbar from "@mui/material/Snackbar";
+import snackbarService from "./../../../../services/snackbar.service";
+import Alert from "./../../../../components/alert.component";
+import { KNOWHTTPSTATUS } from "./../../../../services/api.service";
+import { useNavigate } from "react-router-dom";
 
 export default function Monitorization(props) {
     const auth = useAuth();
+    const navigate = useNavigate();
 
+    // state to manage snackbar state
+    const [snackbar, setSnackbar] = useState(
+        snackbarService._getInitialState()
+    );
+
+    const alarmsStateMap = {};
+    alarmsStateMap[ALARM_STATES.activate] =
+        strings.adminstration.monitorization.list.alarmStates.active;
+    alarmsStateMap[ALARM_STATES.deactivate] =
+        strings.adminstration.monitorization.list.alarmStates.deactive;
+    alarmsStateMap[ALARM_STATES.deactivateBySecurityGuard] =
+        strings.adminstration.monitorization.list.alarmStates.deactivatedBySecurityGuard;
+    alarmsStateMap[ALARM_STATES.activateBySecurityGuard] =
+        strings.adminstration.monitorization.list.alarmStates.activatedBySecurityGuard;
+    alarmsStateMap[ALARM_STATES.keepActivate] =
+        strings.adminstration.monitorization.list.alarmStates.keepActive;
+    alarmsStateMap[ALARM_STATES.keepDeactivate] =
+        strings.adminstration.monitorization.list.alarmStates.keepDeactive;
+
+    /**
+     * State to control the user details dialog
+     */
+    const [logDetailsDialogState, setUserDetailsDialogState] = useState({
+        open: false,
+        user: null,
+    });
+
+    /**
+     * On user details dialog
+     * @param {*} user
+     */
+    const handleUserDetailsOpen = (log) => {
+        setUserDetailsDialogState({
+            open: true,
+            log: log,
+        });
+    };
+
+    /**
+     * On user details dialog close
+     */
+    const handleUserDetailsClose = () => {
+        setUserDetailsDialogState({
+            ...logDetailsDialogState,
+            open: false,
+        });
+    };
+
+    /**
+     * Format Java Date string
+     * @param {*} dateString
+     * @returns
+     */
     const getDateFotmatted = (dateString) =>
         moment(dateString).format("DD/MM/YYYY HH:mm:ss");
 
@@ -47,6 +111,45 @@ export default function Monitorization(props) {
             flex: 1,
             valueGetter: (params) => params.row.division.name,
         },
+        {
+            field: "stateOnEntry",
+            headerName: strings.adminstration.monitorization.list.stateEntry,
+            flex: 1,
+            valueGetter: (params) =>
+                params.row.stateOnEntry
+                    ? alarmsStateMap[params.row.stateOnEntry]
+                    : "-",
+        },
+        {
+            field: "stateOnLeave",
+            headerName: strings.adminstration.monitorization.list.stateLeave,
+            flex: 1,
+            valueGetter: (params) =>
+                params.row.stateOnLeave
+                    ? alarmsStateMap[params.row.stateOnLeave]
+                    : "-",
+        },
+        {
+            field: "action",
+            headerName: strings.adminstration.users.list.details,
+            sortable: false,
+            renderCell: (params) => {
+                const onClick = (e) => {
+                    e.stopPropagation(); // don't select this row after clicking
+                    handleUserDetailsOpen(params.row); // open the user details dialog
+                };
+
+                return (
+                    <IconButton
+                        onClick={onClick}
+                        color="primary"
+                        aria-label="see user details"
+                        component="label">
+                        <ReadMoreIcon />
+                    </IconButton>
+                );
+            },
+        },
     ];
 
     const [pageState, setPageState] = useState({
@@ -54,7 +157,7 @@ export default function Monitorization(props) {
         data: [],
         total: 0,
         page: 0,
-        pageSize: 5,
+        pageSize: 10,
     });
 
     useEffect(() => {
@@ -68,28 +171,57 @@ export default function Monitorization(props) {
                     pageState.pageSize
                 );
                 const total = response.data.maxRegisters;
-                const users = await response.data.registers;
+                const registry = await response.data.registers;
 
                 setPageState((old) => ({
                     ...old,
                     isLoading: false,
-                    data: users,
+                    data: registry,
                     total: total,
                 }));
-            } catch (err) {
-                // TODO tratar excecoes
+            } catch (e) {
+                // if status code is unauthorized the user credentials are wrong
+                if (e?.response?.status === KNOWHTTPSTATUS.unauthorized) {
+                    auth.logout();
+                    navigate("/"); // redirect to login
+                }
+
+                // show snackbar with error message
+                snackbarService.showError(e.message, setSnackbar);
             }
         };
 
         fetchData();
     }, [pageState.page, pageState.pageSize]);
 
+    /**
+     * Event on snackbar close event
+     * @param {*} event
+     * @param {*} reason
+     * @returns void
+     */
+    const handleClose = (event, reason) => {
+        if (reason === "clickaway") return;
+
+        snackbarService.hide(snackbar, setSnackbar);
+    };
+
+    const action = (
+        <React.Fragment>
+            <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={handleClose}></IconButton>
+        </React.Fragment>
+    );
+
     return (
-        <div className="users-container">
+        <div className="monitorization-container">
             <h1 className="content-title">
                 {strings.adminstration.monitorization.title}
             </h1>
-            <div className="users-data-table-container">
+            <div className="monitorization-data-table-container">
                 <DataGrid
                     autoHeight
                     rows={pageState.data}
@@ -113,6 +245,22 @@ export default function Monitorization(props) {
                     getRowId={(row) => row.uuid}
                 />
             </div>
+            <Dialog
+                open={logDetailsDialogState.open}
+                onClose={handleUserDetailsClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description">
+                <MonitorizationDetail log={logDetailsDialogState.log} />
+            </Dialog>
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={handleClose}
+                action={action}>
+                <Alert onClose={handleClose} severity={snackbar.severity}>
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </div>
     );
 }

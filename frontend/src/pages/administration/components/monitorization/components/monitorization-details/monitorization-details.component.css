@@ -1,0 +1,26 @@
+.monitorization-bottom-resume {
+    justify-content: space-evenly;
+    padding: 16px;
+}
+
+.monitarization-detail-container {
+    min-width: 400px;
+}
+
+.monitarization-detail-fields-container {
+    display: grid;
+    row-gap: 16px;
+}
+
+.monitarization-detailed-field {
+    display: grid;
+}
+
+.monitarization-detailed-field .title {
+    font-weight: medium;
+}
+
+.monitarization-detailed-field-access {
+    display: grid;
+    row-gap: 8px;
+}

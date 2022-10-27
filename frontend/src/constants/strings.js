@@ -1,12 +1,14 @@
 const strings = {
     companyName: "Smart Security",
-    // monitorization: "Monitorization",
-    // user: "User",
     floor: "Floor",
     divisions: "Divisions",
     groundFloor: "Ground Floor",
     leaveBuilding: "Leave Building",
     logout: "Logout",
+    divisionTypes: {
+        office: "Office",
+        commonArea: "Common Area",
+    },
     roles: {
         admin: "Security Guard",
         user: "Employee",
@@ -52,10 +54,28 @@ const strings = {
                 entryAt: "Entry At",
                 leaveAt: "Leave At",
                 access: "Access",
+                stateEntry: "State on Entry",
+                stateLeave: "State on Leave",
+                details: "Details",
+                record: "Record",
+                alarmStates: {
+                    deactive: "Deactived",
+                    active: "Actived",
+                    keepActive: "Kept Active",
+                    keepDeactive: "Kept Deactive",
+                    deactivatedBySecurityGuard: "Deactivated by Security Guard",
+                    activatedBySecurityGuard: "Activated by Security Guard",
+                },
             },
         },
         alarms: {
             title: "Alarms",
+            list: {
+                alarmStatus: "Alarm Status",
+                name: "Division Name",
+                floor: "Floor",
+                divisionType: "Division Type",
+            },
         },
     },
     exceptions: {
