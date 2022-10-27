@@ -22,7 +22,7 @@ public class UserDetails implements UserDetailsService {
 
     @Override
     public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        com.isec.gps41.SmartSecurity.model.User user = userRepository.findByEmail(email);
+        com.isec.gps41.SmartSecurity.model.User user = userRepository.findByEmailAndActiveIsTrue(email);
         if(user == null){
             throw new UsernameNotFoundException("User not found");
         }

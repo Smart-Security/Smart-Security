@@ -48,9 +48,9 @@ public class UserService {
     }
 
 
-    public User findByEmail(String email) {
+    public User findByEmail(String email, boolean active) {
         try {
-            return userRepository.findByEmail(email);
+            return userRepository.findByEmailAndActive(email, active);
         }catch (Exception e){
             throw new ResourcesInvalid("Invalid information", HttpStatus.NOT_FOUND);
         }
@@ -60,16 +60,16 @@ public class UserService {
         Sort sort = ord.equals("asc") ? Sort.by(Sort.Direction.ASC, "name") : Sort.by(Sort.Direction.DESC, "name") ;
         Pageable pageable = PageRequest.of(numPage, size, sort);
         if(includGuard){
-            return userRepository.findAllByRoleOrRole(ROLES.SECURITY_GUARD_ROLE, ROLES.USER_ROLE, pageable);
+            return userRepository.findAllByRoleOrRoleAndActive(ROLES.SECURITY_GUARD_ROLE, ROLES.USER_ROLE, true ,pageable);
         }else{
-            return userRepository.findAllByRole(ROLES.USER_ROLE, pageable);
+            return userRepository.findAllByRoleAndActive(ROLES.USER_ROLE, true,pageable);
         }
     }
 
     public int getMaxUsers(boolean includGuard) {
         if (includGuard)
-            return userRepository.countAllByRoleOrRole(ROLES.SECURITY_GUARD_ROLE, ROLES.USER_ROLE);
-        return userRepository.countAllByRole(ROLES.USER_ROLE);
+            return userRepository.countAllByRoleOrRoleAndActiveIsTrue(ROLES.SECURITY_GUARD_ROLE, ROLES.USER_ROLE);
+        return userRepository.countAllByRoleAndActiveIsTrue(ROLES.USER_ROLE);
     }
 
     public User create(User user, Set<Division> divisions) {
@@ -120,5 +120,11 @@ public class UserService {
     public User getUserById(long id) {
         User u = userRepository.findById(id).orElseThrow(() -> new InvalidToken("Invalid token, please login again", HttpStatus.CONFLICT));
         return u;
+    }
+
+    public void inativeUser(UUID uuid) {
+        User u = userRepository.findByUuid(uuid).orElseThrow(() -> new ResourcesInvalid("UUID invalid of user", HttpStatus.BAD_REQUEST));
+        u.setActive(false);
+        userRepository.save(u);
     }
 }

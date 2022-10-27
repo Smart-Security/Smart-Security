@@ -14,17 +14,21 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByEmail(String email);
 
+    User findByEmailAndActiveIsTrue(String email);
+
+    User findByEmailAndActive(String email, boolean active);
+
     Optional<User> findById(long id);
 
 
     boolean existsByEmail(String email);
 
-    List<User> findAllByRoleOrRole(GrantedAuthority role1, GrantedAuthority role2, Pageable pageable);
+    List<User> findAllByRoleOrRoleAndActive(GrantedAuthority role1, GrantedAuthority role2, boolean active, Pageable pageable);
 
-    List<User> findAllByRole(GrantedAuthority userRole, Pageable pageable);
-    int countAllByRoleOrRole(GrantedAuthority role, GrantedAuthority role2);
+    List<User> findAllByRoleAndActive(GrantedAuthority userRole, boolean active, Pageable pageable);
+    int countAllByRoleOrRoleAndActiveIsTrue(GrantedAuthority role, GrantedAuthority role2);
 
-    int countAllByRole(GrantedAuthority role1);
+    int countAllByRoleAndActiveIsTrue(GrantedAuthority role1);
 
     Optional<User> findByUuid(UUID uuid);
 

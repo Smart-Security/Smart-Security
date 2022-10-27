@@ -45,7 +45,7 @@ public class AlarmManagementService {
         long id = tokenProvider.getIdByToken(token);
         User u = userService.getUserById(id);
         divisions = getDivisionsOfUser(listDivisionUUID, u);
-        alarmService.activeAlarms(divisions, u);
+        alarmService.activeAlarmsGuard(divisions, u);
 
         return divisions.stream().map(DivisionDto::mapToDto).toList();
     }
