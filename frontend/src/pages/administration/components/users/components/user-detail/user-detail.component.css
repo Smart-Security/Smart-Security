@@ -1,3 +1,6 @@
+.user-detail-container {
+    min-width: 400px;
+}
 
 .user-detail-fields-container {
     display: grid;
