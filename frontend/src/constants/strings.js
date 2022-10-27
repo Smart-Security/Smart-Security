@@ -1,4 +1,3 @@
-
 const strings = {
     companyName: "Smart Security",
     monitorization: "Monitorization",
@@ -20,7 +19,7 @@ const strings = {
         signin: "Sign In",
         invalidEmail: "Invalid email address",
         invalidPassword: "Invalid password",
-        invalidCredentials: "Invalid email or password"
+        invalidCredentials: "Invalid email or password",
     },
     goto: {
         title: "Go To",
@@ -38,23 +37,32 @@ const strings = {
                 role: "Role",
                 access: "Access",
                 details: "Details",
-                birthDate: "Birth Date"
-            }
+                birthDate: "Birth Date",
+            },
         },
         monitorization: {
             title: "Monitorization",
+            list: {
+                name: "Name",
+                email: "Email",
+                entryAt: "Entry At",
+                leaveAt: "Leave At",
+                access: "Access",
+            },
         },
         alarms: {
-            title: "Alarms"
-        }
+            title: "Alarms",
+        },
     },
     exceptions: {
         forbiden: "You have no access to this area.",
         unauthorized: "You are not authorized to access this area.",
         notFound: "Page Not Found",
-        networkError: "Unable to reach the server. Check your network connection.",
-        generic: "Something went wrong. Try deativate alarms manually or talk with the Security Guard"
-    }
-}
+        networkError:
+            "Unable to reach the server. Check your network connection.",
+        generic:
+            "Something went wrong. Try deativate alarms manually or talk with the Security Guard",
+    },
+};
 
 export default strings;
