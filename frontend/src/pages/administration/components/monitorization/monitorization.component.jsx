@@ -11,9 +11,20 @@ import IconButton from "@mui/material/IconButton";
 import ReadMoreIcon from "@mui/icons-material/ReadMore";
 import Dialog from "@mui/material/Dialog";
 import MonitorizationDetail from "./components/monitorization-details/monitorization-details.component";
+import Snackbar from "@mui/material/Snackbar";
+import snackbarService from "./../../../../services/snackbar.service";
+import Alert from "./../../../../components/alert.component";
+import { KNOWHTTPSTATUS } from "./../../../../services/api.service";
+import { useNavigate } from "react-router-dom";
 
 export default function Monitorization(props) {
     const auth = useAuth();
+    const navigate = useNavigate();
+
+    // state to manage snackbar state
+    const [snackbar, setSnackbar] = useState(
+        snackbarService._getInitialState()
+    );
 
     const alarmsStateMap = {};
     alarmsStateMap[ALARM_STATES.activate] =
@@ -160,28 +171,57 @@ export default function Monitorization(props) {
                     pageState.pageSize
                 );
                 const total = response.data.maxRegisters;
-                const users = await response.data.registers;
+                const registry = await response.data.registers;
 
                 setPageState((old) => ({
                     ...old,
                     isLoading: false,
-                    data: users,
+                    data: registry,
                     total: total,
                 }));
-            } catch (err) {
-                // TODO tratar excecoes
+            } catch (e) {
+                // if status code is unauthorized the user credentials are wrong
+                if (e?.response?.status === KNOWHTTPSTATUS.unauthorized) {
+                    auth.logout();
+                    navigate("/"); // redirect to login
+                }
+
+                // show snackbar with error message
+                snackbarService.showError(e.message, setSnackbar);
             }
         };
 
         fetchData();
     }, [pageState.page, pageState.pageSize]);
 
+    /**
+     * Event on snackbar close event
+     * @param {*} event
+     * @param {*} reason
+     * @returns void
+     */
+    const handleClose = (event, reason) => {
+        if (reason === "clickaway") return;
+
+        snackbarService.hide(snackbar, setSnackbar);
+    };
+
+    const action = (
+        <React.Fragment>
+            <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={handleClose}></IconButton>
+        </React.Fragment>
+    );
+
     return (
-        <div className="users-container">
+        <div className="monitorization-container">
             <h1 className="content-title">
                 {strings.adminstration.monitorization.title}
             </h1>
-            <div className="users-data-table-container">
+            <div className="monitorization-data-table-container">
                 <DataGrid
                     autoHeight
                     rows={pageState.data}
@@ -212,6 +252,15 @@ export default function Monitorization(props) {
                 aria-describedby="alert-dialog-description">
                 <MonitorizationDetail log={logDetailsDialogState.log} />
             </Dialog>
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={handleClose}
+                action={action}>
+                <Alert onClose={handleClose} severity={snackbar.severity}>
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </div>
     );
 }
