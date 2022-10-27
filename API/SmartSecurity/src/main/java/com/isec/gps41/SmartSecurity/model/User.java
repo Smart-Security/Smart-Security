@@ -48,6 +48,9 @@ public class User {
     @Size(min = 9 ,max = 15, message = "Phone size should be between 9 and 15")
     private String phone;
 
+    @Column(nullable = false)
+    private boolean active = true;
+
     @ManyToMany
     Set<Division> divisions = new HashSet<>();
 

@@ -68,7 +68,7 @@ public class UserBOController {
     @PreAuthorize("hasRole('" + ROLES.SECURITY_GUARD + "')")
     @DeleteMapping("/{uuid}")
     public ResponseEntity<String>destroy( @PathVariable(name = "uuid")UUID uuid){
-        buildingService.destroyUser(uuid);
+        buildingService.inativeUser(uuid);
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 

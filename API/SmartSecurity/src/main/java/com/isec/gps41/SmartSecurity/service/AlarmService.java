@@ -226,6 +226,13 @@ public class AlarmService {
         return registerRepository.count();
     }
 
+    public void activeAlarmsGuard(Set<Division> divisions, User u) {
+        divisions = divisions.stream().sorted().collect(Collectors.toCollection(LinkedHashSet::new));
+        for (Division division : divisions) {
+            activeAlarmAdmin(division, u);
+        }
+
+    }
 }
 
 

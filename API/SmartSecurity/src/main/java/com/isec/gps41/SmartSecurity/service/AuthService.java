@@ -30,6 +30,7 @@ public class AuthService {
         user.setRole(ROLES.USER_ROLE);
         user.setBirthDate(new Date(1996, 03, 18));
         user.setName("aa");
+        user.setActive(true);
         User u =  userService.create(user);
 
         return u;
@@ -40,7 +41,7 @@ public class AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return userService.findByEmail(request.getEmail());
+        return userService.findByEmail(request.getEmail(), true);
     }
 
 }

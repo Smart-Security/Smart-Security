@@ -24,6 +24,7 @@ public class UserDto {
     private String name;
 
     private Date birthDate;
+    private boolean active;
 
     private List<DivisionDto> divisions;
 
@@ -38,6 +39,7 @@ public class UserDto {
         userDto.uuid = user.getUuid();
         userDto.setDivisions(user.getDivisions().stream().map(DivisionDto::mapToDto).toList());
         userDto.setRole(user.getRole().toString());
+        userDto.active = user.isActive();
         return  userDto;
     }
     public static User maptoUser(UserDto userdto){
@@ -56,6 +58,7 @@ public class UserDto {
         userDto.email = user.getEmail();
         userDto.name = user.getName();
         userDto.uuid = user.getUuid();
+        userDto.active = user.isActive();
         //userDto.setDivisionDtos(user.getDivisions().stream().map(DivisionDto::mapToDto).toList());
         return  userDto;
     }

@@ -65,6 +65,7 @@ public class BuildingService {
         Set<Division> divisions = divisionService.getDivisionsByUUID(userNewRequest.getDivisions());
         divisions = divisionService.filterDivisions(divisions);
         User u = UserDto.maptoUser(userNewRequest.getUser());
+        u.setActive(true);
         u.setPassword(userNewRequest.getPassword());
         return UserDto.maptoDto(userService.create(u, divisions));
 
@@ -110,5 +111,9 @@ public class BuildingService {
         long id = tokenProvider.getIdByToken(token);
         User user = userService.findUserById(id);
         return UserDto.maptoDto(user);
+    }
+
+    public void inativeUser(UUID uuid) {
+        userService.inativeUser(uuid);
     }
 }

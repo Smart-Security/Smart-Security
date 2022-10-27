@@ -93,7 +93,7 @@ public class DivisionService {
     }
 
     public Division getDivisionByUUID(UUID uuid) {
-        return divisionRepository.findByUuid(uuid);
+        return divisionRepository.findByUuid(uuid).orElseThrow(() -> new ResourcesInvalid("UUID invalid", HttpStatus.BAD_REQUEST));
 
     }
 }
