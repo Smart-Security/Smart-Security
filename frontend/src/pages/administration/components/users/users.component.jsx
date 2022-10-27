@@ -9,7 +9,7 @@ import { useTheme } from '@mui/material/styles';
 import Zoom from '@mui/material/Zoom';
 import UserManagementService from './../../../../services/users.management.service.js' 
 import { useAuth } from './../../../../hooks/use-auth.hook'
-import { ROLETYPE } from '../../../../models/authentication.model';
+import { ROLETYPE } from '../../../../models/role-type.model';
 import { DIVISION_TYPE } from './../../../../models/divisions-type.model'
 import IconButton from '@mui/material/IconButton';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';

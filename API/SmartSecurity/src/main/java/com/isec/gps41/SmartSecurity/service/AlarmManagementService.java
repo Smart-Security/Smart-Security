@@ -67,6 +67,12 @@ public class AlarmManagementService {
         List<Register> registers = alarmService.getRegisters(pageNumber, pageSize, order, date, field);
         registerPageable.setRegisters(registers.stream().map(RegisterDto::mapToDto).toList());
 
+        long max = alarmService.getMaxRegisters();
+        registerPageable.setMaxRegisters(max);
+        boolean isLast = ((long) pageSize * (pageNumber + 1)) + pageNumber >= max;
+        registerPageable.setLastPage(isLast);
+        registerPageable.setLength(registers.size());
+
         return registerPageable;
     }
 

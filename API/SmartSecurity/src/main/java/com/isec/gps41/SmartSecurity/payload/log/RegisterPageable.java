@@ -8,8 +8,8 @@ import java.util.List;
 public class RegisterPageable {
 
     private List<RegisterDto> registers;
-
-    private int totalOfRegister;
-
+    private long maxRegisters;
     private boolean isLastPage;
+    private int length;
+
 }

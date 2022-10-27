@@ -8,7 +8,7 @@ import "./user-detail.component.css"
 import strings from './../../../../../../constants/strings'
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
-import { ROLETYPE } from './../../../../../../models/authentication.model';
+import { ROLETYPE } from './../../../../../../models/role-type.model';
 
 export default function UserDetail(props) {
 

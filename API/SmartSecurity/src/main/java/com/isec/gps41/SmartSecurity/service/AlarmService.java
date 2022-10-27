@@ -218,6 +218,13 @@ public class AlarmService {
         registerRepository.save(register);
     }
 
+    /**
+     * Get the number max of registers stored.
+     * @return numer of registers
+     */
+    public long getMaxRegisters() {
+        return registerRepository.count();
+    }
 
 }
 
