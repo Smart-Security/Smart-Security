@@ -50,6 +50,8 @@ const strings = {
                 access: "Access",
                 stateEntry: "State on Entry",
                 stateLeave: "State on Leave",
+                details: "Details",
+                record: "Record",
                 alarmStates: {
                     deactive: "Deactived",
                     active: "Actived",
