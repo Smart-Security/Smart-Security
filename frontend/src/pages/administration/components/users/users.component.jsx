@@ -16,8 +16,18 @@ import ReadMoreIcon from "@mui/icons-material/ReadMore";
 import Dialog from "@mui/material/Dialog";
 import UserDetail from "./components/user-detail/user-detail.component";
 import { AddUserDialog } from "./components/add-user-form/add-user-form.component";
+import Snackbar from "@mui/material/Snackbar";
+import snackbarService from "./../../../../services/snackbar.service";
+import Alert from "./../../../../components/alert.component";
+import { useNavigate } from "react-router-dom";
+import { KNOWHTTPSTATUS } from "./../../../../services/api.service";
 
 export default function Users(props) {
+    // state to manage snackbar state
+    const [snackbar, setSnackbar] = useState(
+        snackbarService._getInitialState()
+    );
+
     /**
      * State to control the user details dialog
      */
@@ -107,6 +117,7 @@ export default function Users(props) {
     ];
 
     const auth = useAuth();
+    const navigate = useNavigate();
     const theme = useTheme();
 
     const [pageState, setPageState] = useState({
@@ -136,8 +147,15 @@ export default function Users(props) {
                     data: users,
                     total: total,
                 }));
-            } catch (err) {
-                // TODO tratar excecoes
+            } catch (e) {
+                // if status code is unauthorized the user credentials are wrong
+                if (e?.response?.status === KNOWHTTPSTATUS.unauthorized) {
+                    auth.logout();
+                    navigate("/"); // redirect to login
+                }
+
+                // show snackbar with error message
+                snackbarService.showError(e.message, setSnackbar);
             }
         };
 
@@ -158,6 +176,28 @@ export default function Users(props) {
     const handleClose = (value) => {
         setOpenDialog(false);
     };
+
+    /**
+     * Event on snackbar close event
+     * @param {*} event
+     * @param {*} reason
+     * @returns void
+     */
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === "clickaway") return;
+
+        snackbarService.hide(snackbar, setSnackbar);
+    };
+
+    const action = (
+        <React.Fragment>
+            <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={handleClose}></IconButton>
+        </React.Fragment>
+    );
 
     return (
         <div className="users-container">
@@ -192,6 +232,7 @@ export default function Users(props) {
                     }
                 />
             </div>
+
             <Zoom
                 in={true}
                 timeout={transitionDuration}
@@ -215,6 +256,17 @@ export default function Users(props) {
                 aria-describedby="alert-dialog-description">
                 <UserDetail user={userDetailsDialogState.user} />
             </Dialog>
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+                action={action}>
+                <Alert
+                    onClose={handleSnackbarClose}
+                    severity={snackbar.severity}>
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
             <AddUserDialog open={open} onClose={handleClose} />
         </div>
     );
