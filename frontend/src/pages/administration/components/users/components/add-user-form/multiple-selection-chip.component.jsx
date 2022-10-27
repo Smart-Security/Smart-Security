@@ -9,6 +9,7 @@ import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 import strings from "../../../../../../constants/strings";
 import { ListSubheader } from "@mui/material";
+import { FormHelperText } from "@mui/material";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -21,15 +22,15 @@ const MenuProps = {
   },
 };
 
-function getStyles(division, selectedDivisions, theme) {
-  const isDivisionNotSelected = false;
+// function getStyles(division, selectedDivisions, theme) {
+//   const isDivisionNotSelected = false;
 
-  return {
-    fontWeight: isDivisionNotSelected
-      ? theme.typography.fontWeightRegular
-      : theme.typography.fontWeightMedium,
-  };
-}
+//   return {
+//     fontWeight: isDivisionNotSelected
+//       ? theme.typography.fontWeightRegular
+//       : theme.typography.fontWeightMedium,
+//   };
+// }
 
 export default function MultipleSelectChip(props) {
   const theme = useTheme();
@@ -51,19 +52,12 @@ export default function MultipleSelectChip(props) {
     console.log(divisionSelected);
   }, [divisionSelected]);
 
-  const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
-
   return (
     <div>
-      <FormControl sx={{ m: 1, width: 300 }}>
+      <FormControl
+        sx={{ m: 1, width: 300 }}
+        error={divisionSelected.length === 0}
+      >
         <InputLabel id="demo-multiple-chip-label">
           {strings.divisions}
         </InputLabel>
@@ -83,40 +77,42 @@ export default function MultipleSelectChip(props) {
           )}
           MenuProps={MenuProps}
         >
-          {building.map(
-            (floor) =>
-              floor.divisions
-                .filter((division) => division.type !== "COMMON_AREA")
-                .map((division) => (
-                  <MenuItem
-                    key={division.uuid}
-                    value={division}
-                    style={getStyles(division, divisionSelected, theme)}
-                  >
-                    {division.name}
-                  </MenuItem>
-                ))
-            // {
-            // return (
-            //   <div key={`${strings.floor} ${floor.number}`}>
-            //     <ListSubheader>
-            //       {`${strings.floor} ${floor.number}`}
-            //     </ListSubheader>
-            //     {floor.divisions.map((division, index) => (
-            //       <MenuItem
-            //         key={`${floor.number} ${division.name}`}
-            //         value={division}
-            //         style={getStyles(division.name, divisionSelected, theme)}
-            //       >
-            //         {division.name}
-            //       </MenuItem>
-            //     ))}
-            //   </div>
-            // );
-            // }
+          {building.map((floor) =>
+            floor.divisions
+              .filter((division) => division.type !== "COMMON_AREA")
+              .map((division) => (
+                <MenuItem
+                  key={division.uuid}
+                  value={division}
+                  // style={getStyles(division, divisionSelected, theme)}
+                >
+                  {division.name}
+                </MenuItem>
+              ))
           )}
+          {/* {building.map((floor) => (
+            <div key={`${strings.floor} ${floor.number}`}>
+              <ListSubheader>
+                {`${strings.floor} ${floor.number}`}
+              </ListSubheader>
+              {floor.divisions.map((division) => (
+                <MenuItem
+                  key={division.uuid}
+                  value={division}
+                  //style={getStyles(division.name, divisionSelected, theme)}
+                >
+                  {division.name}
+                </MenuItem>
+              ))}
+            </div>
+          ))} */}
         </Select>
       </FormControl>
+      <FormHelperText>
+        {divisionSelected.length === 0
+          ? strings.adminstration.users.selectDivisions
+          : ""}
+      </FormHelperText>
     </div>
   );
 }
