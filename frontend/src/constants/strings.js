@@ -1,8 +1,9 @@
 const strings = {
     companyName: "Smart Security",
-    monitorization: "Monitorization",
-    user: "User",
+    // monitorization: "Monitorization",
+    // user: "User",
     floor: "Floor",
+    divisions: "Divisions",
     groundFloor: "Ground Floor",
     leaveBuilding: "Leave Building",
     logout: "Logout",
@@ -39,6 +40,9 @@ const strings = {
                 details: "Details",
                 birthDate: "Birth Date",
             },
+            submit: "Submit",
+            insertName: "Insert Name",
+            selectDivisions: "Select divisions",
         },
         monitorization: {
             title: "Monitorization",
@@ -64,5 +68,4 @@ const strings = {
             "Something went wrong. Try deativate alarms manually or talk with the Security Guard",
     },
 };
-
 export default strings;
