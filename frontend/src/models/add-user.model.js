@@ -19,6 +19,6 @@ export default class AddUser {
       birthDate: birthDate,
     };
     this.password = password;
-    this.division = divisions;
+    this.divisions = divisions;
   }
 }
