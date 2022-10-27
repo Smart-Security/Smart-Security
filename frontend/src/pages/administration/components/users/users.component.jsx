@@ -15,6 +15,7 @@ import IconButton from "@mui/material/IconButton";
 import ReadMoreIcon from "@mui/icons-material/ReadMore";
 import Dialog from "@mui/material/Dialog";
 import UserDetail from "./components/user-detail/user-detail.component";
+import { AddUserDialog } from "./components/add-user-form/add-user-form.component";
 
 export default function Users(props) {
     /**
@@ -148,6 +149,16 @@ export default function Users(props) {
         exit: theme.transitions.duration.leavingScreen,
     };
 
+    const [open, setOpenDialog] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpenDialog(true);
+    };
+
+    const handleClose = (value) => {
+        setOpenDialog(false);
+    };
+
     return (
         <div className="users-container">
             <h1 className="content-title">
@@ -191,7 +202,8 @@ export default function Users(props) {
                 <Fab
                     color="primary"
                     variant="extended"
-                    className="add-fab-button">
+                    className="add-fab-button"
+                    onClick={() => handleClickOpen()}>
                     <NavigationIcon sx={{ mr: 1 }} />
                     {strings.adminstration.users.add}
                 </Fab>
@@ -203,6 +215,7 @@ export default function Users(props) {
                 aria-describedby="alert-dialog-description">
                 <UserDetail user={userDetailsDialogState.user} />
             </Dialog>
+            <AddUserDialog open={open} onClose={handleClose} />
         </div>
     );
 }
