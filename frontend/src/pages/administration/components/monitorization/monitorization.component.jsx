@@ -7,6 +7,10 @@ import { DataGrid } from "@mui/x-data-grid";
 import moment from "moment";
 import "./monitorization.component.css";
 import { ALARM_STATES } from "./../../../../models/alarm-state.model";
+import IconButton from "@mui/material/IconButton";
+import ReadMoreIcon from "@mui/icons-material/ReadMore";
+import Dialog from "@mui/material/Dialog";
+import MonitorizationDetail from "./components/monitorization-details/monitorization-details.component";
 
 export default function Monitorization(props) {
     const auth = useAuth();
@@ -24,6 +28,35 @@ export default function Monitorization(props) {
         strings.adminstration.monitorization.list.alarmStates.keepActive;
     alarmsStateMap[ALARM_STATES.keepDeactivate] =
         strings.adminstration.monitorization.list.alarmStates.keepDeactive;
+
+    /**
+     * State to control the user details dialog
+     */
+    const [logDetailsDialogState, setUserDetailsDialogState] = useState({
+        open: false,
+        user: null,
+    });
+
+    /**
+     * On user details dialog
+     * @param {*} user
+     */
+    const handleUserDetailsOpen = (log) => {
+        setUserDetailsDialogState({
+            open: true,
+            log: log,
+        });
+    };
+
+    /**
+     * On user details dialog close
+     */
+    const handleUserDetailsClose = () => {
+        setUserDetailsDialogState({
+            ...logDetailsDialogState,
+            open: false,
+        });
+    };
 
     /**
      * Format Java Date string
@@ -85,6 +118,27 @@ export default function Monitorization(props) {
                     ? alarmsStateMap[params.row.stateOnLeave]
                     : "-",
         },
+        {
+            field: "action",
+            headerName: strings.adminstration.users.list.details,
+            sortable: false,
+            renderCell: (params) => {
+                const onClick = (e) => {
+                    e.stopPropagation(); // don't select this row after clicking
+                    handleUserDetailsOpen(params.row); // open the user details dialog
+                };
+
+                return (
+                    <IconButton
+                        onClick={onClick}
+                        color="primary"
+                        aria-label="see user details"
+                        component="label">
+                        <ReadMoreIcon />
+                    </IconButton>
+                );
+            },
+        },
     ];
 
     const [pageState, setPageState] = useState({
@@ -92,7 +146,7 @@ export default function Monitorization(props) {
         data: [],
         total: 0,
         page: 0,
-        pageSize: 5,
+        pageSize: 10,
     });
 
     useEffect(() => {
@@ -151,6 +205,13 @@ export default function Monitorization(props) {
                     getRowId={(row) => row.uuid}
                 />
             </div>
+            <Dialog
+                open={logDetailsDialogState.open}
+                onClose={handleUserDetailsClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description">
+                <MonitorizationDetail log={logDetailsDialogState.log} />
+            </Dialog>
         </div>
     );
 }
