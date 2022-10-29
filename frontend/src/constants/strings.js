@@ -83,6 +83,10 @@ const strings = {
                 name: "Division Name",
                 floor: "Floor",
                 divisionType: "Division Type",
+                actions: {
+                    activate: "Activate alarms",
+                    deactivate: "Deactivate alarms",
+                },
             },
         },
     },
