@@ -1,4 +1,5 @@
 import environment from "../constants/enviroment";
+import EditUser from "../models/edit-user.model";
 import apiService from "./api.service";
 
 export default class UserManagementService {
@@ -6,6 +7,7 @@ export default class UserManagementService {
     addUser: "api/bo/users/new",
     list: "api/bo/users",
     listDivisions: "api/bo/building",
+    editUser: "api/bo/users/",
   };
 
   /**
@@ -38,6 +40,23 @@ export default class UserManagementService {
   static async addUser(auth, user) {
     return await apiService.post(
       environment.baseUrl + this.endpoints.addUser,
+      user,
+      {
+        headers: { Authorization: `${auth.tokenType} ${auth.token}` },
+      }
+    );
+  }
+
+  /**
+   * Loads the user logged information and the user to edit
+   * @param {Auth} auth authentication of the user who is making the request
+   * @param {EditUser} user user to be edited
+   * @param {String} uuid uuid from the user that will be edited to go on the header of the request
+   * @returns
+   */
+  static async editUser(auth, user, uuid) {
+    return await apiService.put(
+      environment.baseUrl + this.endpoints.editUser + uuid,
       user,
       {
         headers: { Authorization: `${auth.tokenType} ${auth.token}` },
