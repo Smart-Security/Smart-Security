@@ -176,6 +176,12 @@ export default function Alarms(props) {
                 selectedAlarms
             );
             fetchData();
+
+            // show snackbar with success message
+            snackbarService.showSuccess(
+                strings.adminstration.alarms.list.activationSuccess,
+                setSnackbar
+            );
         } catch (e) {
             // if status code is unauthorized the user credentials are wrong
             if (e?.response?.status === KNOWHTTPSTATUS.unauthorized) {
@@ -198,6 +204,12 @@ export default function Alarms(props) {
                 selectedAlarms
             );
             fetchData();
+
+            // show snackbar with success message
+            snackbarService.showSuccess(
+                strings.adminstration.alarms.list.deactivationSuccess,
+                setSnackbar
+            );
         } catch (e) {
             // if status code is unauthorized the user credentials are wrong
             if (e?.response?.status === KNOWHTTPSTATUS.unauthorized) {

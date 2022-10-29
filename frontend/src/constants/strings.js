@@ -87,6 +87,8 @@ const strings = {
                     activate: "Activate alarms",
                     deactivate: "Deactivate alarms",
                 },
+                deactivationSuccess: "Alarms deactivation complete",
+                activationSuccess: "Alarms activation complete",
             },
         },
     },
