@@ -171,10 +171,9 @@ export default function Alarms(props) {
      */
     const onAlarmsActivation = async () => {
         try {
-            const alarmsListUUID = selectedAlarms.map((alarm) => alarm.uuid);
             await AlarmsManagementService.activateAlarms(
                 auth.user,
-                alarmsListUUID
+                selectedAlarms
             );
             fetchData();
         } catch (e) {
@@ -194,10 +193,9 @@ export default function Alarms(props) {
      */
     const onAlarmsDeactivation = async () => {
         try {
-            const alarmsListUUID = selectedAlarms.map((alarm) => alarm.uuid);
             await AlarmsManagementService.deactivateAlarms(
                 auth.user,
-                alarmsListUUID
+                selectedAlarms
             );
             fetchData();
         } catch (e) {
