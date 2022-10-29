@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useTheme } from "@mui/material/styles";
+// import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
@@ -8,7 +8,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 import strings from "../../../../../../constants/strings";
-import { ListSubheader } from "@mui/material";
+// import { ListSubheader } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 
 const ITEM_HEIGHT = 48;
@@ -33,24 +33,22 @@ const MenuProps = {
 // }
 
 export default function MultipleSelectChip(props) {
-  const theme = useTheme();
-  const [personName, setPersonName] = React.useState([]);
+  // const theme = useTheme();
 
   const building = props.divisions;
+  const divisionSelected = props.selectedDivisions;
+  const error = props.error;
+  const helperText = props.helperText;
 
-  const [divisionSelected, setDivisionSelected] = React.useState([]);
-
+  /**
+   * When a new division is selected
+   */
   const handleDivisionSelected = (event) => {
     const {
       target: { value },
     } = event;
-    setDivisionSelected(value);
+    props.onSelectedDivisions(value);
   };
-
-  useEffect(() => {
-    props.onSelectedDivisions(divisionSelected);
-    console.log(divisionSelected);
-  }, [divisionSelected]);
 
   return (
     <div>
@@ -71,7 +69,11 @@ export default function MultipleSelectChip(props) {
           renderValue={(selected) => (
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
               {selected.map((divison) => (
-                <Chip key={divison.uuid} label={divison.name} />
+                <Chip
+                  variant="outlined"
+                  key={divison.uuid}
+                  label={divison.name}
+                />
               ))}
             </Box>
           )}
@@ -107,12 +109,8 @@ export default function MultipleSelectChip(props) {
             </div>
           ))} */}
         </Select>
+        <FormHelperText>{error ? helperText : ""}</FormHelperText>
       </FormControl>
-      <FormHelperText>
-        {divisionSelected.length === 0
-          ? strings.adminstration.users.selectDivisions
-          : ""}
-      </FormHelperText>
     </div>
   );
 }
