@@ -8,11 +8,16 @@ import EditIcon from "@mui/icons-material/Edit";
 import ReadMoreIcon from "@mui/icons-material/ReadMore";
 import Divider from "@mui/material/Divider";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { useTheme } from "@mui/material/styles";
 import "./user-actions-menu.component.css";
 
 export default function UserActionsMenu(props) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+
+    const { disableEdit, disableDelete } = props;
+
+    const theme = useTheme();
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -48,7 +53,8 @@ export default function UserActionsMenu(props) {
                 <MenuItem
                     onClick={onEdit}
                     className="action-menu-item"
-                    disableRipple>
+                    disableRipple
+                    disabled={disableEdit}>
                     <EditIcon />
                     {strings.adminstration.users.actions.edit}
                 </MenuItem>
@@ -63,7 +69,9 @@ export default function UserActionsMenu(props) {
                 <MenuItem
                     onClick={onDelete}
                     className="action-menu-item"
-                    disableRipple>
+                    disableRipple
+                    disabled={disableDelete}
+                    style={{ color: theme.palette.error[400] }}>
                     <DeleteIcon />
                     {strings.adminstration.users.actions.delete}
                 </MenuItem>
