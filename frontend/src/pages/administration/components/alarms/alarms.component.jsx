@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import UserManagementService from "./../../../../services/users.management.service.js";
+import AlarmsManagementService from "./../../../../services/alarms.management.service.js";
 import { useAuth } from "./../../../../hooks/use-auth.hook";
 import strings from "./../../../../constants/strings";
 import "./alarms.component.css";
@@ -12,6 +13,12 @@ import IconButton from "@mui/material/IconButton";
 import { KNOWHTTPSTATUS } from "./../../../../services/api.service";
 import { DIVISION_TYPE } from "./../../../../models/divisions-type.model";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
+import { Stack } from "@mui/material";
+import Zoom from "@mui/material/Zoom";
+import NotificationsOffIcon from "@mui/icons-material/NotificationsOff";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import Tooltip from "@mui/material/Tooltip";
 
 export default function Alarms(props) {
     // map response id to a string
@@ -24,6 +31,8 @@ export default function Alarms(props) {
     const [snackbar, setSnackbar] = useState(
         snackbarService._getInitialState()
     );
+
+    const [selectedAlarms, setSelectedAlarms] = useState([]);
 
     // alrms datagrid column configuration
     const columns = [
@@ -76,54 +85,55 @@ export default function Alarms(props) {
         total: 0,
     });
 
-    useEffect(() => {
-        /**
-         * Uniformize the reponse data to provide floor information on every item.
-         * @param {*} responseData
-         * @returns
-         */
-        const uniformizeRepsonse = (responseData) => {
-            return responseData.floorDtos
-                .map((floor) => {
-                    return floor.divisions.map((division, index) => {
-                        return {
-                            floor: floor.number,
-                            division: division,
-                        };
-                    });
-                })
-                .flat(1);
-        };
+    /**
+     * Uniformize the reponse data to provide floor information on every item.
+     * @param {*} responseData
+     * @returns
+     */
+    const uniformizeRepsonse = (responseData) => {
+        return responseData.floorDtos
+            .map((floor) => {
+                return floor.divisions.map((division, index) => {
+                    return {
+                        floor: floor.number,
+                        division: division,
+                    };
+                });
+            })
+            .flat(1);
+    };
 
-        const fetchData = async () => {
-            try {
-                setPageState((old) => ({ ...old, isLoading: true }));
+    /**
+     * Load alarms from
+     */
+    const fetchData = async () => {
+        try {
+            setPageState((old) => ({ ...old, isLoading: true }));
 
-                const response = await UserManagementService.getBuilding(
-                    auth.user
-                );
+            const response = await UserManagementService.getBuilding(auth.user);
 
-                const data = uniformizeRepsonse(response.data);
-                const total = data.length;
+            const data = uniformizeRepsonse(response.data);
+            const total = data.length;
 
-                setPageState((old) => ({
-                    ...old,
-                    isLoading: false,
-                    data: data,
-                    total: total,
-                }));
-            } catch (e) {
-                // if status code is unauthorized the user credentials are wrong
-                if (e?.response?.status === KNOWHTTPSTATUS.unauthorized) {
-                    auth.logout();
-                    navigate("/"); // redirect to login
-                }
-
-                // show snackbar with error message
-                snackbarService.showError(e.message, setSnackbar);
+            setPageState((old) => ({
+                ...old,
+                isLoading: false,
+                data: data,
+                total: total,
+            }));
+        } catch (e) {
+            // if status code is unauthorized the user credentials are wrong
+            if (e?.response?.status === KNOWHTTPSTATUS.unauthorized) {
+                auth.logout();
+                navigate("/"); // redirect to login
             }
-        };
 
+            // show snackbar with error message
+            snackbarService.showError(e.message, setSnackbar);
+        }
+    };
+
+    useEffect(() => {
         fetchData();
     }, []);
 
@@ -149,11 +159,106 @@ export default function Alarms(props) {
         </React.Fragment>
     );
 
+    const theme = useTheme();
+
+    const transitionDuration = {
+        enter: theme.transitions.duration.enteringScreen,
+        exit: theme.transitions.duration.leavingScreen,
+    };
+
+    /**
+     * Action event to set on the selected alarms list.
+     */
+    const onAlarmsActivation = async () => {
+        try {
+            const alarmsListUUID = selectedAlarms.map((alarm) => alarm.uuid);
+            await AlarmsManagementService.activateAlarms(
+                auth.user,
+                alarmsListUUID
+            );
+            fetchData();
+        } catch (e) {
+            // if status code is unauthorized the user credentials are wrong
+            if (e?.response?.status === KNOWHTTPSTATUS.unauthorized) {
+                auth.logout();
+                navigate("/"); // redirect to login
+            }
+
+            // show snackbar with error message
+            snackbarService.showError(e.message, setSnackbar);
+        }
+    };
+
+    /**
+     * Action event to set off the selected alarms list.
+     */
+    const onAlarmsDeactivation = async () => {
+        try {
+            const alarmsListUUID = selectedAlarms.map((alarm) => alarm.uuid);
+            await AlarmsManagementService.deactivateAlarms(
+                auth.user,
+                alarmsListUUID
+            );
+            fetchData();
+        } catch (e) {
+            // if status code is unauthorized the user credentials are wrong
+            if (e?.response?.status === KNOWHTTPSTATUS.unauthorized) {
+                auth.logout();
+                navigate("/"); // redirect to login
+            }
+
+            // show snackbar with error message
+            snackbarService.showError(e.message, setSnackbar);
+        }
+    };
+
     return (
         <div className="alarms-container">
-            <h1 className="content-title">
-                {strings.adminstration.alarms.title}
-            </h1>
+            <div className="title-container">
+                <h1 className="content-title">
+                    {strings.adminstration.alarms.title}
+                </h1>
+
+                <Zoom
+                    in={selectedAlarms.length > 0}
+                    timeout={transitionDuration}
+                    style={{
+                        transitionDelay: `${transitionDuration.exit}ms`,
+                    }}
+                    unmountOnExit>
+                    <Stack direction="row" spacing={2}>
+                        <Tooltip
+                            title={
+                                strings.adminstration.alarms.list.actions
+                                    .activate
+                            }>
+                            <IconButton
+                                onClick={onAlarmsActivation}
+                                aria-label="see user details"
+                                component="label"
+                                style={{
+                                    color: theme.palette.success[400],
+                                }}>
+                                <NotificationsActiveIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip
+                            title={
+                                strings.adminstration.alarms.list.actions
+                                    .deactivate
+                            }>
+                            <IconButton
+                                onClick={onAlarmsDeactivation}
+                                color="primary"
+                                aria-label="see user details"
+                                component="label"
+                                style={{ color: theme.palette.error[400] }}>
+                                <NotificationsOffIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </Stack>
+                </Zoom>
+            </div>
             <div className="alarms-data-table-container">
                 <DataGrid
                     autoHeight
@@ -162,7 +267,11 @@ export default function Alarms(props) {
                     loading={pageState.isLoading}
                     columns={columns}
                     getRowId={(row) => row.division.uuid}
-                    rowsPerPageOptions={[]}
+                    rowsPerPageOptions={[100]}
+                    onSelectionModelChange={(newSelectionModel) => {
+                        setSelectedAlarms(newSelectionModel);
+                    }}
+                    selectionModel={selectedAlarms}
                 />
             </div>
             <Snackbar
