@@ -205,11 +205,15 @@ export default function Users(props) {
                     // handleUserDetailsOpen(params.row); // open the user details dialog
                 };
 
+                const isSecurityGuard = params.row.role === ROLETYPE.ADMIN;
+
                 return (
                     <UserActionsMenu
                         onEdit={onEdit}
                         onDelete={onDelete}
                         onDetails={onDetails}
+                        disableEdit={isSecurityGuard}
+                        disableDelete={isSecurityGuard}
                     />
                 );
             },
