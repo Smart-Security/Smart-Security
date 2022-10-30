@@ -7,6 +7,7 @@ export default class UserService {
         register: "auth/register",
         profile: "api/fo/users",
         goto: "api/fo/users/goto",
+        leave: "api/fo/users/leave",
     };
 
     /**
@@ -61,6 +62,20 @@ export default class UserService {
         return await apiService.post(
             environment.baseUrl + this.endpoints.goto,
             { uuids: uuidList },
+            {
+                headers: { Authorization: `${auth.tokenType} ${auth.token}` },
+            }
+        );
+    }
+
+    /**
+     * Leave the building
+     * @param {*} auth logged information
+     * @returns
+     */
+    static async leave(auth) {
+        return await apiService.get(
+            environment.baseUrl + this.endpoints.leave,
             {
                 headers: { Authorization: `${auth.tokenType} ${auth.token}` },
             }
