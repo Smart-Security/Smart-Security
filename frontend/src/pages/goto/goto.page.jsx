@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import UserService from "../../services/user.service";
 import { useAuth } from "../../hooks/use-auth.hook";
-import { Container, Box } from "@mui/material";
+import { Container, Box, useTheme } from "@mui/material";
 import "./goto.page.css";
 import strings from "../../constants/strings";
 import DivisionCard from "./components/division-card.component";
@@ -11,11 +11,16 @@ import Snackbar from "@mui/material/Snackbar";
 import snackbarService from "./../../services/snackbar.service";
 import Alert from "./../../components/alert.component";
 import IconButton from "@mui/material/IconButton";
-import { useTheme } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
+import { KNOWHTTPSTATUS } from "../../services/api.service";
+import Button from "@mui/material/Button";
+import StringService from "../../services/strings.service";
+import Skeleton from "@mui/material/Skeleton";
 import Zoom from "@mui/material/Zoom";
 
 export default function GoToPage(props) {
     const auth = useAuth();
+    const navigate = useNavigate();
 
     const [profile, setProfile] = useState(null);
 
@@ -25,28 +30,65 @@ export default function GoToPage(props) {
     );
 
     /**
+     * On leave building
+     */
+    const leaveBuilding = async () => {
+        try {
+            await UserService.leave(auth.user);
+            auth.logout();
+            navigate("/"); // redirect to login
+        } catch (e) {
+            // if status code is unauthorized the user credentials are wrong
+            if (e?.response?.status === KNOWHTTPSTATUS.unauthorized) {
+                auth.logout();
+                navigate("/"); // redirect to login
+            }
+
+            // show snackbar with error message
+            snackbarService.showError(e.message, setSnackbar);
+        }
+    };
+
+    /**
      * Load the user profile data
      */
     const fetchProfileData = async () => {
         try {
             const response = await UserService.profileInformation(auth.user);
             setProfile(response.data);
-        } catch (e) {}
+        } catch (e) {
+            // if status code is unauthorized the user credentials are wrong
+            if (e?.response?.status === KNOWHTTPSTATUS.unauthorized) {
+                auth.logout();
+                navigate("/"); // redirect to login
+            }
+
+            // show snackbar with error message
+            snackbarService.showError(e.message, setSnackbar);
+        }
     };
 
     useEffect(() => {
         fetchProfileData();
     }, []);
 
-    useEffect(() => {
-        console.log(profile);
-    }, [profile]);
-
-    const goto = (division) => {
+    const goto = async (division) => {
         try {
-            const response = UserService.goto(auth.user, [division.uuid]);
-            setProfile(response.data);
-        } catch (e) {}
+            await UserService.goto(auth.user, [division.uuid]);
+            auth.logout();
+            navigate("/", {
+                state: { name: profile.name, room: division.name },
+            }); // redirect to login
+        } catch (e) {
+            // if status code is unauthorized the user credentials are wrong
+            if (e?.response?.status === KNOWHTTPSTATUS.unauthorized) {
+                auth.logout();
+                navigate("/"); // redirect to login
+            }
+
+            // show snackbar with error message
+            snackbarService.showError(e.message, setSnackbar);
+        }
     };
 
     /**
@@ -71,6 +113,9 @@ export default function GoToPage(props) {
         </React.Fragment>
     );
 
+    const title = StringService.format(strings.goto.title, profile?.name);
+    const isLoading = profile == null;
+
     const theme = useTheme();
 
     const transitionDuration = {
@@ -79,29 +124,45 @@ export default function GoToPage(props) {
     };
 
     return (
-        <Box>
-            <Container maxWidth="lg">
-                <h1>{strings.goto.title}</h1>
-                <Zoom
-                    in={profile != null}
-                    timeout={transitionDuration}
-                    style={{
-                        transitionDelay: `${transitionDuration.exit}ms`,
-                    }}
-                    unmountOnExit>
-                    <Grid container spacing={2}>
-                        {profile?.divisions.map((division) => (
-                            <Grid item xs={4}>
-                                <DivisionCard
-                                    key={division.uuid}
-                                    division={division}
-                                    onClick={(division) => goto(division)}
-                                />
-                            </Grid>
-                        ))}
+        <Box className="goto-container">
+            <Container maxWidth="lg" className="base-container">
+                <h1 className="go-to-title">
+                    {isLoading ? <Skeleton width={200} /> : title}
+                </h1>
+                <div className="divisions-container">
+                    <Grid container spacing={3}>
+                        {profile == null
+                            ? [...Array(8)].map((e, i) => (
+                                  <Grid item xs={6} key={`grid-item-${i}`}>
+                                      <DivisionCard loading />
+                                  </Grid>
+                              ))
+                            : profile?.divisions.map((division) => (
+                                  <Grid item xs={6} key={division.uuid}>
+                                      <DivisionCard
+                                          division={division}
+                                          onClick={(division) => goto(division)}
+                                      />
+                                  </Grid>
+                              ))}
                     </Grid>
-                </Zoom>
+                </div>
             </Container>
+            <Zoom
+                in={!isLoading}
+                timeout={transitionDuration}
+                style={{
+                    transitionDelay: `${transitionDuration.exit}ms`,
+                }}
+                unmountOnExit>
+                <Button
+                    variant="outlined"
+                    color="error"
+                    className="add-fab-button"
+                    onClick={() => leaveBuilding()}>
+                    {strings.leaveBuilding}
+                </Button>
+            </Zoom>
             <Snackbar
                 open={snackbar.open}
                 autoHideDuration={6000}
