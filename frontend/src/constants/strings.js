@@ -5,6 +5,7 @@ const strings = {
     groundFloor: "Ground Floor",
     leaveBuilding: "Leave Building",
     logout: "Logout",
+    gotoSuccess: "{0} alarms have been deactivated for {1}",
     divisionTypes: {
         office: "Office",
         commonArea: "Common Area",
@@ -25,7 +26,7 @@ const strings = {
         invalidCredentials: "Invalid email or password",
     },
     goto: {
-        title: "Go To",
+        title: "{0} where do you want to go?",
     },
     adminstration: {
         managenment: "Managenment",
