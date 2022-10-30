@@ -14,6 +14,8 @@ import Authentication from "./../../models/authentication.model";
 import strings from "../../constants/strings";
 import { KNOWHTTPSTATUS } from "./../../services/api.service";
 import StringService from "../../services/strings.service";
+import { Typography } from "@mui/material";
+import SecurityIcon from "@mui/icons-material/Security";
 
 export default function LoginPage(props) {
     const [snackbar, setSnackbar] = useState(
@@ -100,6 +102,15 @@ export default function LoginPage(props) {
     return (
         <div className="login">
             <div className="login-container">
+                <div className="logo-container">
+                    <SecurityIcon color="primary" sx={{ fontSize: 100 }} />
+                    <Typography
+                        variant="h5"
+                        color="primary"
+                        sx={{ fontWeight: "medium" }}>
+                        {strings.companyName}
+                    </Typography>
+                </div>
                 <h2 className="form-title">{strings.login.title}</h2>
                 <LoginForm
                     onFormSubmit={(email, password) =>
