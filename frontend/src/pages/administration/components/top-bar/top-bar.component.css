@@ -1,7 +1,13 @@
-
 .profile-information {
     display: flex;
     flex-direction: row;
     gap: 16px;
     align-items: center;
+}
+
+.profile-top-bar-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
 }
