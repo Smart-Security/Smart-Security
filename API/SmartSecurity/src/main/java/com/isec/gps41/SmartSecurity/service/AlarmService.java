@@ -28,6 +28,7 @@ public class AlarmService {
     RegisterRepository registerRepository;
 
     public void desativateAlarmeIfIsNotAtivate(Set<Division> divisions, User user) {
+
         List<Register> registers = registerRepository.getRegistersIfLeave_atIsNull().stream().toList();
         StateOfAlarm state;
         if(registers.stream().anyMatch(register -> register.getUser().getId() == user.getId() && divisions.contains(register.getDivision()))){
@@ -206,9 +207,6 @@ public class AlarmService {
 
         Register register = new Register();
         List<Register> registers = registerRepository.findAllByLeaveAtIsNullAndDivision_Id(division.getId());
-        if(registers.stream().anyMatch( r -> u.getId() == r.getUser().getId())){
-            throw new ResourcesInvalid("Já tentou desativar esta sala", HttpStatus.BAD_REQUEST);
-        }
 
         division.getAlarm().setOn(false);
         alarmRepository.save(division.getAlarm());
@@ -232,6 +230,13 @@ public class AlarmService {
             activeAlarmAdmin(division, u);
         }
 
+    }
+
+    public void desativateAlarmsSecurityGuard(Set<Division> divisions, User u) {
+        for (Division division : divisions) {
+            if (division.getAlarm().isOn())
+                desativateAlarmAdmin(division, u);
+        }
     }
 }
 
