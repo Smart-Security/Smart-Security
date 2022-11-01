@@ -36,7 +36,7 @@ public class AlarmManagementService {
         long id = tokenProvider.getIdByToken(token);
         User u = userService.getUserById(id);
         divisions = getDivisionsOfUser(listDivisionUUID, u);
-        alarmService.desativateAlarmeIfIsNotAtivate(divisions, u);
+        alarmService.desativateAlarmsSecurityGuard(divisions, u);
         return divisions.stream().map(DivisionDto::mapToDto).toList();
     }
 
