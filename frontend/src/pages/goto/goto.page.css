@@ -1,0 +1,27 @@
+.MuiButton-outlined.add-fab-button {
+    position: fixed;
+    bottom: var(--padding-spacing);
+    right: var(--padding-spacing);
+}
+
+.goto-container {
+    display: flex;
+    height: 100vh;
+}
+
+.divisions-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100% - 48px - 48px - 32px);
+    padding: 24px;
+}
+
+.go-to-title {
+    margin-top: 48px;
+    margin-bottom: 0px;
+}
+
+.base-container {
+    padding: 0;
+}

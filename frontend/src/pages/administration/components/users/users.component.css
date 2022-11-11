@@ -1,4 +1,3 @@
-
 :root {
     --toolbar-size: 64px;
     --padding-spacing: 24px;
@@ -14,7 +13,7 @@
 
 .users-data-table-container {
     display: flex;
-    min-height: calc(100vh - 64px - 48px - 48px - 24px - 48px - 24px)
+    min-height: calc(100vh - 64px - 48px - 48px - 24px - 48px - 24px);
 }
 
 .MuiFab-extended.add-fab-button {

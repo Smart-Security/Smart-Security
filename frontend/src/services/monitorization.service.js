@@ -11,7 +11,7 @@ export default class MonitorizationService {
      * @param {Authentication} authentication
      * @returns
      */
-    static async logs(user, page, numberOfRows, order = "desc") {
+    static async logs(user, page, numberOfRows, order = "asc") {
         return await apiService.get(environment.baseUrl + this.endpoints.log, {
             params: {
                 pageNo: page,
