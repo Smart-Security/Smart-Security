@@ -51,9 +51,9 @@ public class UserBOController {
 
     @PreAuthorize("hasRole('" + ROLES.SECURITY_GUARD + "')")
     @PutMapping("/{uuid}")
-    public ResponseEntity<UserUpdateRequest> update(@RequestHeader("Authorization")String auth,
+    public ResponseEntity<UserDto> update(@RequestHeader("Authorization")String auth,
                                                     @PathVariable(name = "uuid")UUID uuid,
-                                                    @RequestBody UserUpdateRequest userUpdateRequest){
+                                                    @RequestBody UserNewRequest userUpdateRequest){
 
         return new ResponseEntity<>(buildingService.updateUser(userUpdateRequest, uuid), HttpStatus.OK) ;
     }

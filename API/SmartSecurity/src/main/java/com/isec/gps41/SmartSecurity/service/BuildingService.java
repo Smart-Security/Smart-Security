@@ -38,6 +38,9 @@ public class BuildingService {
     @Autowired
     FloorRepository floorRepository;
 
+    @Autowired
+    AuthService authService;
+
     public UsersList getUsers(int numPage, int size, String ord) {
         validateOrder(ord);
         List<UserDto> dtos =  userService.getUsers(numPage, size, ord, true).stream().map(UserDto::maptoDto).toList();
@@ -72,13 +75,12 @@ public class BuildingService {
     }
 
 
-    public UserUpdateRequest updateUser(UserUpdateRequest userUpdateRequest, UUID uuid) {
+    public UserDto updateUser(UserNewRequest userUpdateRequest, UUID uuid) {
         Set<Division> divisions = divisionService.getDivisionsByUUID(userUpdateRequest.getDivisions());
         User user = userService.findUserByUUID(uuid);
 
-        userService.update(user, divisions, userUpdateRequest.getUser());
-        userUpdateRequest.setUser(UserDto.maptoDto(user));
-        return userUpdateRequest;
+        userService.update(user, divisions, userUpdateRequest.getUser(), userUpdateRequest.getPassword());
+        return UserDto.maptoDto(user);
     }
 
 
