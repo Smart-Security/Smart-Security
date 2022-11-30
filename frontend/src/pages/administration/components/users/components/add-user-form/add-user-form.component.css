@@ -1,0 +1,13 @@
+.user-form-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-column-gap: 24px;
+    grid-row-gap: 24px;
+}
+
+.form-user-container {
+    display: flex;
+    padding: 24px;
+    flex-direction: column;
+    gap: 24px;
+}
