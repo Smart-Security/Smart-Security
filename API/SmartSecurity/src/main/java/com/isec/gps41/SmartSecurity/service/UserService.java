@@ -7,6 +7,7 @@ import com.isec.gps41.SmartSecurity.exception.ResourcesInvalid;
 import com.isec.gps41.SmartSecurity.model.Division;
 import com.isec.gps41.SmartSecurity.model.User;
 import com.isec.gps41.SmartSecurity.payload.UserDto;
+import com.isec.gps41.SmartSecurity.payload.enums.ErrorEnum;
 import com.isec.gps41.SmartSecurity.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -21,6 +22,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class UserService {
@@ -75,8 +78,9 @@ public class UserService {
     public User create(User user, Set<Division> divisions) {
         try {
             if (userRepository.existsByEmail(user.getEmail())) {
-                throw new ResourcesInvalid("Email used", HttpStatus.BAD_REQUEST);
+                throw new ResourcesInvalid("Email used", HttpStatus.UNPROCESSABLE_ENTITY, ErrorEnum.EMAIL_USED);
             }
+            checkPasswordRegex(user.getPassword());
             user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
             user.setRole(ROLES.USER_ROLE);
             user.setDivisions(divisions);
@@ -89,18 +93,31 @@ public class UserService {
     }
 
 
-    public void update(User user, Set<Division> divisions, UserDto userDto) {
+    public void update(User user, Set<Division> divisions, UserDto userDto, String password) {
         if(!userDto.getEmail().equals(user.getEmail())){
             if (userRepository.existsByEmail(userDto.getEmail())) {
-                throw new ResourcesInvalid("Email used", HttpStatus.BAD_REQUEST);
+                throw new ResourcesInvalid("Email used", HttpStatus.UNPROCESSABLE_ENTITY, ErrorEnum.EMAIL_USED);
             }
             user.setEmail(userDto.getEmail());
         }
+        if (password != null && !password.isEmpty()) {
+            checkPasswordRegex(password);
+            user.setPassword(AuthService.encodePassword(password));
+        }
         user.setName(userDto.getName());
         user.setBirthDate(userDto.getBirthDate());
-
         user.setDivisions(divisions);
         userRepository.save(user);
+    }
+
+    private void checkPasswordRegex(String password) {
+        String regex = "^(?=.\\d)(?=.[!@#$%^&])(?=.[a-z])(?=.*[A-Z]).{6,15}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(password);
+
+        if(!matcher.matches()){
+            throw new ResourcesInvalid("Password invalid format", HttpStatus.BAD_REQUEST, ErrorEnum.PASSWORD_NOT_VALID);
+        }
     }
 
     public User findUserByUUID(UUID userUUID) {

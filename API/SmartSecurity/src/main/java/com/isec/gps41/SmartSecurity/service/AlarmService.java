@@ -206,6 +206,7 @@ public class AlarmService {
     private void desativateAlarmAdmin(Division division, User u) {
 
         Register register = new Register();
+        //TODO ver isto
         List<Register> registers = registerRepository.findAllByLeaveAtIsNullAndDivision_Id(division.getId());
 
         division.getAlarm().setOn(false);

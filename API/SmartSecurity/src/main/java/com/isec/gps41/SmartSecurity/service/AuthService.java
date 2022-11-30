@@ -44,4 +44,10 @@ public class AuthService {
         return userService.findByEmail(request.getEmail(), true);
     }
 
+    public static String encodePassword(String password){
+        return new BCryptPasswordEncoder().encode(password);
+    }
+
+    public void checkPassword(String password) {
+    }
 }
