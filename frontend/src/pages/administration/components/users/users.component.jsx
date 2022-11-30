@@ -14,7 +14,10 @@ import { DIVISION_TYPE } from "./../../../../models/divisions-type.model";
 import IconButton from "@mui/material/IconButton";
 import Dialog from "@mui/material/Dialog";
 import UserDetail from "./components/user-detail/user-detail.component";
-import { AddUserDialog } from "./components/add-user-form/add-user-form.component";
+import {
+    AddUserDialog,
+    UserFormMode,
+} from "./components/add-user-form/add-user-form.component";
 import Snackbar from "@mui/material/Snackbar";
 import snackbarService from "./../../../../services/snackbar.service";
 import Alert from "./../../../../components/alert.component";
@@ -202,7 +205,7 @@ export default function Users(props) {
 
                 const onEdit = (e) => {
                     e.stopPropagation(); // don't select this row after clicking
-                    // handleUserDetailsOpen(params.row); // open the user details dialog
+                    handleUserFormOpen(UserFormMode.EDIT_MODE, params.row); // open the user details dialog
                 };
 
                 const isSecurityGuard = params.row.role === ROLETYPE.ADMIN;
@@ -241,14 +244,18 @@ export default function Users(props) {
         exit: theme.transitions.duration.leavingScreen,
     };
 
-    const [open, setOpenDialog] = React.useState(false);
+    const [userFormDialog, setUserFormDialog] = React.useState({
+        open: false,
+        mode: UserFormMode.ADD_MODE,
+        user: null,
+    });
 
-    const handleClickOpen = () => {
-        setOpenDialog(true);
+    const handleUserFormOpen = (mode, user) => {
+        setUserFormDialog({ open: true, mode: mode, user: user });
     };
 
-    const handleClose = (value) => {
-        setOpenDialog(false);
+    const handleUserFormClose = (value) => {
+        setUserFormDialog({ ...userFormDialog, open: false, user: null });
     };
 
     /**
@@ -269,7 +276,7 @@ export default function Users(props) {
                 size="small"
                 aria-label="close"
                 color="inherit"
-                onClick={handleClose}></IconButton>
+                onClick={handleSnackbarClose}></IconButton>
         </React.Fragment>
     );
 
@@ -317,7 +324,7 @@ export default function Users(props) {
                     color="primary"
                     variant="extended"
                     className="add-fab-button"
-                    onClick={() => handleClickOpen()}>
+                    onClick={() => handleUserFormOpen(UserFormMode.ADD_MODE)}>
                     <NavigationIcon sx={{ mr: 1 }} />
                     {strings.adminstration.users.add}
                 </Fab>
@@ -352,9 +359,11 @@ export default function Users(props) {
                 />
             </Dialog>
             <AddUserDialog
-                open={open}
-                onClose={handleClose}
-                onCancel={handleDeleteClose}
+                open={userFormDialog.open}
+                onClose={handleUserFormClose}
+                onCancel={handleUserFormClose}
+                mode={userFormDialog.mode}
+                user={userFormDialog.user}
             />
         </div>
     );
