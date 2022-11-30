@@ -1,5 +1,4 @@
 import environment from "../constants/enviroment";
-import EditUser from "../models/edit-user.model";
 import apiService from "./api.service";
 
 export default class UserManagementService {
