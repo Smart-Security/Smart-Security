@@ -48,7 +48,7 @@ export default function UserDetail(props) {
                             {strings.adminstration.users.list.birthDate}
                         </Typography>
                         <Typography className="description">
-                            {moment(user.birthDate).format("DD/MM/YYYY")}
+                            {moment(user?.birthDate).format("DD/MM/YYYY")}
                         </Typography>
                     </div>
 
