@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-// import { useTheme } from "@mui/material/styles";
+import React from "react";
 import Box from "@mui/material/Box";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
@@ -10,6 +9,8 @@ import Chip from "@mui/material/Chip";
 import strings from "../../../../../../constants/strings";
 // import { ListSubheader } from "@mui/material";
 import { FormHelperText } from "@mui/material";
+import { DIVISION_TYPE } from "../../../../../../models/divisions-type.model";
+import { useTheme } from "@mui/material/styles";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -17,28 +18,53 @@ const MenuProps = {
     PaperProps: {
         style: {
             maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 250,
         },
     },
 };
 
-// function getStyles(division, selectedDivisions, theme) {
-//   const isDivisionNotSelected = false;
+function getStyles(division, selectedDivisions, theme) {
+    const isDivisionNotSelected = selectedDivisions.includes(division);
 
-//   return {
-//     fontWeight: isDivisionNotSelected
-//       ? theme.typography.fontWeightRegular
-//       : theme.typography.fontWeightMedium,
-//   };
-// }
+    return {
+        fontWeight: isDivisionNotSelected
+            ? theme.typography.fontWeightRegular
+            : theme.typography.fontWeightMedium,
+    };
+}
 
-export default function MultipleSelectChip(props) {
-    // const theme = useTheme();
-
-    const building = props.divisions;
-    const divisionSelected = props.selectedDivisions;
+export default function DivisionsMultiChip(props) {
+    const selectedDivisions = props.selectedDivisions;
     const error = props.error;
     const helperText = props.helperText;
+
+    const theme = useTheme();
+
+    // get divions list unformized in one array
+    const divisions = props?.divisions
+        .map((floor) => {
+            return floor.divisions.map((division) => {
+                return division;
+            });
+        })
+        .flat(1);
+
+    const getUniformDivisions = () => {
+        return selectedDivisions.map((division) => {
+            const uniformizedDivisionIndex = divisions.findIndex(
+                (uniformizedDivision) => {
+                    return division.uuid === uniformizedDivision.uuid;
+                }
+            );
+
+            // founded
+            if (uniformizedDivisionIndex !== -1)
+                return divisions[uniformizedDivisionIndex];
+
+            return null;
+        });
+    };
+
+    const unformizedSelectedDivision = getUniformDivisions();
 
     /**
      * When a new division is selected
@@ -51,73 +77,52 @@ export default function MultipleSelectChip(props) {
     };
 
     return (
-        <div>
-            <FormControl
-                sx={{ m: 1, width: 300 }}
-                error={divisionSelected.length === 0}>
-                <InputLabel id="demo-multiple-chip-label">
-                    {strings.divisions}
-                </InputLabel>
-                <Select
-                    labelId="demo-multiple-chip-label"
-                    id="demo-multiple-chip"
-                    multiple
-                    value={divisionSelected}
-                    onChange={handleDivisionSelected}
-                    input={
-                        <OutlinedInput id="select-multiple-chip" label="Chip" />
-                    }
-                    renderValue={(selected) => (
-                        <Box
-                            sx={{
-                                display: "flex",
-                                flexWrap: "wrap",
-                                gap: 0.5,
-                            }}>
-                            {selected.map((divison) => (
-                                <Chip
-                                    variant="outlined"
-                                    key={divison.uuid}
-                                    label={divison.name}
-                                />
-                            ))}
-                        </Box>
-                    )}
-                    MenuProps={MenuProps}>
-                    {building.map((floor) =>
-                        floor.divisions
-                            .filter(
-                                (division) => division.type !== "COMMON_AREA"
-                            )
-                            .map((division) => (
-                                <MenuItem
-                                    key={division.uuid}
-                                    value={division}
-                                    // style={getStyles(division, divisionSelected, theme)}
-                                >
-                                    {division.name}
-                                </MenuItem>
-                            ))
-                    )}
-                    {/* {building.map((floor) => (
-            <div key={`${strings.floor} ${floor.number}`}>
-              <ListSubheader>
-                {`${strings.floor} ${floor.number}`}
-              </ListSubheader>
-              {floor.divisions.map((division) => (
-                <MenuItem
-                  key={division.uuid}
-                  value={division}
-                  //style={getStyles(division.name, divisionSelected, theme)}
-                >
-                  {division.name}
-                </MenuItem>
-              ))}
-            </div>
-          ))} */}
-                </Select>
-                <FormHelperText>{error ? helperText : ""}</FormHelperText>
-            </FormControl>
-        </div>
+        <FormControl error={unformizedSelectedDivision.length === 0}>
+            <InputLabel id="demo-multiple-chip-label">
+                {strings.divisions}
+            </InputLabel>
+            <Select
+                labelId="demo-multiple-chip-label"
+                id="demo-multiple-chip"
+                multiple
+                value={unformizedSelectedDivision}
+                onChange={handleDivisionSelected}
+                input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+                renderValue={(selected) => (
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 0.5,
+                        }}>
+                        {selected.map((divison) => (
+                            <Chip
+                                variant="outlined"
+                                key={divison}
+                                label={divison.name}
+                            />
+                        ))}
+                    </Box>
+                )}
+                MenuProps={MenuProps}>
+                {divisions
+                    .filter(
+                        (divison) => divison.type !== DIVISION_TYPE.common_area
+                    )
+                    .map((division) => (
+                        <MenuItem
+                            key={division}
+                            value={division}
+                            style={getStyles(
+                                division,
+                                unformizedSelectedDivision,
+                                theme
+                            )}>
+                            {division.name}
+                        </MenuItem>
+                    ))}
+            </Select>
+            <FormHelperText>{error ? helperText : ""}</FormHelperText>
+        </FormControl>
     );
 }

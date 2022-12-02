@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../../../../../hooks/use-auth.hook";
 import UserManagementService from "../../../../../../services/users.management.service";
@@ -128,8 +129,10 @@ export default function AddUserForm(props) {
         const isPasswordsValid = () => {
             const passwordValid = password.length > 0;
             return validationReturn(
-                passwordValid,
-                passwordValid ? "" : strings.login.invalidPassword
+                props.mode === UserFormMode.EDIT_MODE || passwordValid,
+                props.mode === UserFormMode.EDIT_MODE || passwordValid
+                    ? ""
+                    : strings.login.invalidPassword
             );
         };
 
@@ -249,6 +252,7 @@ export default function AddUserForm(props) {
                     onChange={(newValue) => setPassword(newValue.target.value)}
                     error={!passwordValidationResult.result}
                     helperText={passwordValidationResult.message}
+                    autocomplete="current-password"
                 />
             </div>
 
