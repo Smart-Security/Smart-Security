@@ -126,10 +126,10 @@ export default function GoToPage(props) {
     return (
         <Box className="goto-container">
             <Container maxWidth="lg" className="base-container">
-                <h1 className="go-to-title">
-                    {isLoading ? <Skeleton width={200} /> : title}
-                </h1>
                 <div className="divisions-container">
+                    <h1 className="go-to-title">
+                        {isLoading ? <Skeleton width={200} /> : title}
+                    </h1>
                     <Grid container spacing={3}>
                         {profile == null
                             ? [...Array(8)].map((e, i) => (

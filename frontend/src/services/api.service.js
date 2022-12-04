@@ -4,6 +4,7 @@ import strings from "../constants/strings";
 export const KNOWHTTPSTATUS = {
     unauthorized: 401,
     forbiden: 403,
+    unprocessableEntity: 422,
 };
 
 /**
@@ -14,6 +15,7 @@ const HTTPSTATUSCODESMESSAGE = {
     401: strings.exceptions.unauthorized,
     403: strings.exceptions.forbiden,
     404: strings.exceptions.notFound,
+    422: strings.exceptions.generic,
     500: strings.exceptions.server,
     ERR_NETWORK: strings.exceptions.networkError,
     generic: strings.exceptions.generic,
@@ -31,6 +33,14 @@ class APIService {
     post = async (url, data, config) => {
         try {
             return await axios.post(url, data, config);
+        } catch (e) {
+            this.handleHTTPRequestErrorStatus(e);
+        }
+    };
+
+    put = async (url, data, config) => {
+        try {
+            return await axios.put(url, data, config);
         } catch (e) {
             this.handleHTTPRequestErrorStatus(e);
         }

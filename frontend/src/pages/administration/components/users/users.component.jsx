@@ -4,7 +4,7 @@ import strings from "./../../../../constants/strings";
 import "./users.component.css";
 import { DataGrid } from "@mui/x-data-grid";
 import Fab from "@mui/material/Fab";
-import NavigationIcon from "@mui/icons-material/Navigation";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { useTheme } from "@mui/material/styles";
 import Zoom from "@mui/material/Zoom";
 import UserManagementService from "./../../../../services/users.management.service.js";
@@ -14,7 +14,7 @@ import { DIVISION_TYPE } from "./../../../../models/divisions-type.model";
 import IconButton from "@mui/material/IconButton";
 import Dialog from "@mui/material/Dialog";
 import UserDetail from "./components/user-detail/user-detail.component";
-import { AddUserDialog } from "./components/add-user-form/add-user-form.component";
+import { UserFormMode } from "./components/add-user-form/add-user-form.component";
 import Snackbar from "@mui/material/Snackbar";
 import snackbarService from "./../../../../services/snackbar.service";
 import Alert from "./../../../../components/alert.component";
@@ -23,6 +23,7 @@ import { KNOWHTTPSTATUS } from "./../../../../services/api.service";
 import UserActionsMenu from "./components/user-actions-menu/user-actions-menu.component";
 import UserDeleteConfirmation from "./components/user-delete-confirmation/user-delete-confirmation.component";
 import StringService from "../../../../services/strings.service";
+import UserForm from "./components/add-user-form/add-user-form.component";
 
 export default function Users(props) {
     // state to manage snackbar state
@@ -202,7 +203,7 @@ export default function Users(props) {
 
                 const onEdit = (e) => {
                     e.stopPropagation(); // don't select this row after clicking
-                    // handleUserDetailsOpen(params.row); // open the user details dialog
+                    handleUserFormOpen(UserFormMode.EDIT_MODE, params.row); // open the user details dialog
                 };
 
                 const isSecurityGuard = params.row.role === ROLETYPE.ADMIN;
@@ -241,14 +242,42 @@ export default function Users(props) {
         exit: theme.transitions.duration.leavingScreen,
     };
 
-    const [open, setOpenDialog] = React.useState(false);
+    const [userFormDialog, setUserFormDialog] = React.useState({
+        open: false,
+        mode: UserFormMode.ADD_MODE,
+        user: null,
+    });
 
-    const handleClickOpen = () => {
-        setOpenDialog(true);
+    const handleUserFormOpen = (mode, user) => {
+        setUserFormDialog({ open: true, mode: mode, user: user });
     };
 
-    const handleClose = (value) => {
-        setOpenDialog(false);
+    const handleUserFormClose = () => {
+        setUserFormDialog({ ...userFormDialog, open: false });
+    };
+
+    const handleUserFormSubmit = (user) => {
+        setUserFormDialog({ ...userFormDialog, open: false });
+
+        console.log(user);
+
+        snackbarService.showSuccess(
+            userFormDialog.mode === UserFormMode.ADD_MODE
+                ? StringService.format(
+                      strings.adminstration.users.form.result.addSuccess,
+                      user.name
+                  )
+                : StringService.format(
+                      strings.adminstration.users.form.result.editSuccess,
+                      user.name
+                  ),
+            setSnackbar
+        );
+        fetchData();
+    };
+
+    const handleUserFormError = (errorMessage) => {
+        snackbarService.showError(errorMessage, setSnackbar);
     };
 
     /**
@@ -269,7 +298,7 @@ export default function Users(props) {
                 size="small"
                 aria-label="close"
                 color="inherit"
-                onClick={handleClose}></IconButton>
+                onClick={handleSnackbarClose}></IconButton>
         </React.Fragment>
     );
 
@@ -305,7 +334,6 @@ export default function Users(props) {
                     }
                 />
             </div>
-
             <Zoom
                 in={true}
                 timeout={transitionDuration}
@@ -317,8 +345,12 @@ export default function Users(props) {
                     color="primary"
                     variant="extended"
                     className="add-fab-button"
-                    onClick={() => handleClickOpen()}>
-                    <NavigationIcon sx={{ mr: 1 }} />
+                    style={{ color: theme.palette.text.primary }}
+                    onClick={() => handleUserFormOpen(UserFormMode.ADD_MODE)}>
+                    <PersonAddIcon
+                        sx={{ mr: 1 }}
+                        style={{ color: theme.palette.text.primary }}
+                    />
                     {strings.adminstration.users.add}
                 </Fab>
             </Zoom>
@@ -351,11 +383,20 @@ export default function Users(props) {
                     onCancel={handleDeleteClose}
                 />
             </Dialog>
-            <AddUserDialog
-                open={open}
-                onClose={handleClose}
-                onCancel={handleDeleteClose}
-            />
+            <Dialog
+                open={userFormDialog.open}
+                onClose={handleUserFormClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description">
+                <UserForm
+                    mode={userFormDialog.mode}
+                    user={userFormDialog.user}
+                    onSubmit={(user) => handleUserFormSubmit(user)}
+                    onError={(errorMessage) =>
+                        handleUserFormError(errorMessage)
+                    }
+                />
+            </Dialog>
         </div>
     );
 }

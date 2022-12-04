@@ -14,7 +14,7 @@ import { KNOWHTTPSTATUS } from "./../../../../services/api.service";
 import { DIVISION_TYPE } from "./../../../../models/divisions-type.model";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
-import { Stack } from "@mui/material";
+import { Divider, Stack } from "@mui/material";
 import Zoom from "@mui/material/Zoom";
 import NotificationsOffIcon from "@mui/icons-material/NotificationsOff";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
@@ -236,7 +236,25 @@ export default function Alarms(props) {
                         transitionDelay: `${transitionDuration.exit}ms`,
                     }}
                     unmountOnExit>
-                    <Stack direction="row" spacing={2}>
+                    <Stack
+                        direction="row"
+                        spacing={2}
+                        className="alarm-actions-container"
+                        divider={<Divider orientation="vertical" flexItem />}>
+                        <Tooltip
+                            title={
+                                strings.adminstration.alarms.list.actions
+                                    .deactivate
+                            }>
+                            <IconButton
+                                onClick={onAlarmsDeactivation}
+                                color="primary"
+                                aria-label="see user details"
+                                component="label"
+                                style={{ color: theme.palette.error[400] }}>
+                                <NotificationsOffIcon />
+                            </IconButton>
+                        </Tooltip>
                         <Tooltip
                             title={
                                 strings.adminstration.alarms.list.actions
@@ -250,20 +268,6 @@ export default function Alarms(props) {
                                     color: theme.palette.success[400],
                                 }}>
                                 <NotificationsActiveIcon />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip
-                            title={
-                                strings.adminstration.alarms.list.actions
-                                    .deactivate
-                            }>
-                            <IconButton
-                                onClick={onAlarmsDeactivation}
-                                color="primary"
-                                aria-label="see user details"
-                                component="label"
-                                style={{ color: theme.palette.error[400] }}>
-                                <NotificationsOffIcon />
                             </IconButton>
                         </Tooltip>
                     </Stack>

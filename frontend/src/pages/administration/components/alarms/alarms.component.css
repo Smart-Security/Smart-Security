@@ -38,3 +38,10 @@
     align-items: center;
     justify-content: space-between;
 }
+
+.alarm-actions-container {
+    padding: 4px;
+    background: #0d2946;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 50px;
+}

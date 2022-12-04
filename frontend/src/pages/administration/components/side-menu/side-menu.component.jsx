@@ -9,10 +9,13 @@ import Toolbar from "@mui/material/Toolbar";
 import Box from "@mui/material/Box";
 import ListSubheader from "@mui/material/ListSubheader";
 import strings from "../../../../constants/strings";
+import { useTheme } from "@mui/material";
 
 const DRAWERWIDTH = 240;
 
 export default function SideMenu(props) {
+    const theme = useTheme();
+
     return (
         <Drawer
             variant="permanent"
@@ -32,21 +35,32 @@ export default function SideMenu(props) {
                     </ListSubheader>
                     {props.menuItems.map((item) => {
                         const isSelected = item.key === props.currentSelected;
-                        const selectedStyle = {
-                            color: isSelected ? "primary" : "secondary",
+
+                        const colorStyle = {
+                            color: isSelected
+                                ? theme.palette.primary[500]
+                                : theme.palette.text.primary,
+                        };
+
+                        const textStyle = {
+                            ...colorStyle,
+                            fontWeight: isSelected ? 600 : 400,
                         };
 
                         return (
-                            <ListItem key={item.key} disablePadding>
+                            <ListItem
+                                key={item.key}
+                                disablePadding
+                                selected={isSelected}>
                                 <ListItemButton
                                     onClick={() =>
                                         props.onMenuSelection(item.key)
                                     }>
-                                    <ListItemIcon style={selectedStyle}>
+                                    <ListItemIcon style={colorStyle}>
                                         {item.icon}
                                     </ListItemIcon>
                                     <ListItemText
-                                        style={selectedStyle}
+                                        primaryTypographyProps={textStyle}
                                         primary={item.name}
                                     />
                                 </ListItemButton>
