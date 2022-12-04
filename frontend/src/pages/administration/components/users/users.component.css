@@ -14,6 +14,7 @@
 .users-data-table-container {
     display: flex;
     min-height: calc(100vh - 64px - 48px - 48px - 24px - 48px - 24px);
+    margin-bottom: calc(48px + 24px);
 }
 
 .MuiFab-extended.add-fab-button {
