@@ -34,7 +34,7 @@ const strings = {
             title: "Users",
             role: "Role",
             adduser: "Add User",
-            add: "Add",
+            add: "ADD",
             list: {
                 name: "Name",
                 email: "Email",
@@ -51,9 +51,38 @@ const strings = {
                 edit: "Edit",
                 details: "Details",
             },
+            form: {
+                title: {
+                    edit: "Edit User",
+                    add: "Add User",
+                },
+                result: {
+                    addSuccess: "User {0} was added successfully",
+                    editSuccess: "User {0} was edited successfully",
+                },
+                labels: {
+                    name: "Name",
+                    password: "Password",
+                    email: "Email Address",
+                    divisions: "Divisions",
+                    birthDate: "Birth Date",
+                },
+                invalidPassword: "Invalid password",
+                invalidEmail: "Invalid email",
+                invalidPasswordHasWhiteSpaces: "Cannot contain empty spaces",
+                invalidPasswordMustHaveUppercase:
+                    "Must have one uppercase letter",
+                invalidPasswordMustHaveLowercase:
+                    "Must have one lowercase letter",
+                invalidPasswordMustHaveSpecialCharacter:
+                    "Must have one special character [@$!%*?&]",
+                invalidPasswordMustHaveDigits: "Must have one or more digits ",
+                invalidPasswordSize: "Must be 6 at 15 length",
+                emailAlreadyInUse: "The email given is already in use",
+            },
             submit: "Submit",
-            insertName: "Insert Name",
-            selectDivisions: "Select divisions",
+            insertName: "Invalid Name",
+            selectDivisions: "No divisions selected",
         },
         monitorization: {
             title: "Monitorization",
