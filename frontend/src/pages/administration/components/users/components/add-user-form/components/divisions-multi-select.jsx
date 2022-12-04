@@ -6,10 +6,9 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
-import strings from "../../../../../../constants/strings";
-// import { ListSubheader } from "@mui/material";
+import strings from "../../../../../../../constants/strings";
 import { FormHelperText } from "@mui/material";
-import { DIVISION_TYPE } from "../../../../../../models/divisions-type.model";
+import { DIVISION_TYPE } from "../../../../../../../models/divisions-type.model";
 import { useTheme } from "@mui/material/styles";
 
 const ITEM_HEIGHT = 48;
@@ -25,11 +24,18 @@ const MenuProps = {
 function getStyles(division, selectedDivisions, theme) {
     const isDivisionNotSelected = selectedDivisions.includes(division);
 
-    return {
-        fontWeight: isDivisionNotSelected
-            ? theme.typography.fontWeightRegular
-            : theme.typography.fontWeightMedium,
+    const colorStyle = {
+        color: isDivisionNotSelected
+            ? theme.palette.primary[500]
+            : theme.palette.text.primary,
     };
+
+    const textStyle = {
+        ...colorStyle,
+        fontWeight: isDivisionNotSelected ? 600 : 400,
+    };
+
+    return textStyle;
 }
 
 export default function DivisionsMultiChip(props) {
@@ -48,6 +54,7 @@ export default function DivisionsMultiChip(props) {
         })
         .flat(1);
 
+    // get the divisions with the same object reference to provide predefined selected divisions
     const getUniformDivisions = () => {
         return selectedDivisions.map((division) => {
             const uniformizedDivisionIndex = divisions.findIndex(
@@ -63,7 +70,6 @@ export default function DivisionsMultiChip(props) {
             return null;
         });
     };
-
     const unformizedSelectedDivision = getUniformDivisions();
 
     /**
