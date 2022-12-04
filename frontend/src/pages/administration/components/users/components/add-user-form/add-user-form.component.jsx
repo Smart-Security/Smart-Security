@@ -3,20 +3,21 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../../../../../hooks/use-auth.hook";
 import UserManagementService from "../../../../../../services/users.management.service";
 import strings from "../../../../../../constants/strings";
-import DialogTitle from "@mui/material/DialogTitle";
-import Dialog from "@mui/material/Dialog";
 import { Button, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import moment from "moment";
-import MultipleSelectChip from "./multiple-selection-chip.component";
+import MultipleSelectChip from "./components/divisions-multi-select";
 import { KNOWHTTPSTATUS } from "./../../../../../../services/api.service";
 import AddUser from "./../../../../../../models/add-user.model";
 import EditUser from "./../../../../../../models/edit-user.model";
+import { KNOWN_APP_ERRORS } from "./../../../../../../models/known-app-errors";
 import { Skeleton } from "@mui/material";
 import "./add-user-form.component.css";
+import { useNavigate } from "react-router-dom";
+import DialogTitle from "@mui/material/DialogTitle";
 
 export const UserFormMode = {
     EDIT_MODE: 1,
@@ -25,6 +26,12 @@ export const UserFormMode = {
 
 export default function AddUserForm(props) {
     const auth = useAuth();
+    const navigate = useNavigate();
+
+    const mode = props.mode;
+    const userToEdit = props.user;
+    const onSubmitCallback = props.onSubmit;
+    const onError = props.onError;
 
     const [building, setBuilding] = useState(null);
     const [name, setName] = useState("");
@@ -74,8 +81,8 @@ export default function AddUserForm(props) {
 
         // if the user form was opened in edit mode then
         // should fill the form intputs
-        if (props.mode === UserFormMode.EDIT_MODE) {
-            fillInputsOnEdit(props.user);
+        if (mode === UserFormMode.EDIT_MODE) {
+            fillInputsOnEdit(userToEdit);
         }
     }, []);
 
@@ -122,18 +129,99 @@ export default function AddUserForm(props) {
     };
 
     /**
+     * Validate password on:
+     *  - Must have one lower case letter
+     *  - Must have one upper case letter
+     *  - Must have one special characters
+     * @returns
+     */
+    const passwordFormatValidation = () => {
+        const passwordHasWhiteSpaces = password.includes(" ");
+        const lowerCasesValidation = /.*[a-z].*/;
+        const upperCasesValidation = /.*[A-Z].*/;
+        const digitsValidation = /.*\d.*/;
+        const specialCasesValidation = /.*[@$!%*?&].*/;
+        const lengthValidation = /[A-Za-z\d@$!%*?&]{6,15}/;
+
+        const passwordPattern =
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,15}$/g;
+
+        // if the password contains empty spaces
+        if (passwordHasWhiteSpaces)
+            return strings.adminstration.users.form
+                .invalidPasswordHasWhiteSpaces;
+
+        // if the password does not match the predifined pattern
+        if (!passwordPattern.test(password)) {
+            // lower cases
+            if (!lowerCasesValidation.test(password))
+                return strings.adminstration.users.form
+                    .invalidPasswordMustHaveLowercase;
+
+            // upper cases
+            if (!upperCasesValidation.test(password))
+                return strings.adminstration.users.form
+                    .invalidPasswordMustHaveUppercase;
+
+            // digits validations
+            if (!digitsValidation.test(password))
+                return strings.adminstration.users.form
+                    .invalidPasswordMustHaveDigits;
+
+            // special characters validations
+            if (!specialCasesValidation.test(password))
+                return strings.adminstration.users.form
+                    .invalidPasswordMustHaveSpecialCharacter;
+
+            // validations
+            if (!lengthValidation.test(password))
+                return strings.adminstration.users.form.invalidPasswordSize;
+
+            return strings.adminstration.users.form.invalidPassword;
+        }
+
+        return null;
+    };
+
+    /**
      * when password changes validate it and update the password error state
      */
     useEffect(() => {
         // Validate if the passsword is not empty
         const isPasswordsValid = () => {
-            const passwordValid = password.length > 0;
-            return validationReturn(
-                props.mode === UserFormMode.EDIT_MODE || passwordValid,
-                props.mode === UserFormMode.EDIT_MODE || passwordValid
-                    ? ""
-                    : strings.login.invalidPassword
-            );
+            const passwordIsEmpty = password.length === 0;
+
+            switch (mode) {
+                case UserFormMode.ADD_MODE: {
+                    // if the password is empty,
+                    if (passwordIsEmpty)
+                        return validationReturn(
+                            false,
+                            strings.adminstration.users.form.invalidPassword
+                        );
+
+                    // if password is valid
+                    const validationResult = passwordFormatValidation();
+                    if (validationResult != null)
+                        return validationReturn(false, validationResult);
+
+                    return validationReturn(true, "");
+                }
+                case UserFormMode.EDIT_MODE: {
+                    // if user wants to reedit the password
+                    if (!passwordIsEmpty) {
+                        // validate pattern
+                        const validationResult = passwordFormatValidation();
+                        if (validationResult !== null)
+                            return validationReturn(false, validationResult);
+                    }
+
+                    return validationReturn(true, "");
+                }
+                default: {
+                    return validationReturn(true, "");
+                }
+            }
         };
 
         // update the email error state
@@ -175,9 +263,6 @@ export default function AddUserForm(props) {
 
     // Check if edit or add form is valid (name, divisions, password and email completed)
     const isFormNotValid = () => {
-        if (props?.mode === UserFormMode.EDIT_MODE) {
-            return !nameValidationResult.result;
-        }
         return (
             !nameValidationResult.result ||
             !emailValidationResult.result ||
@@ -185,137 +270,162 @@ export default function AddUserForm(props) {
             !divisionsValidationResult.result
         );
     };
+
     /**
      * When login form is submited and the fields are valid.
      */
-    const onFormSubmit = async () => {
+    const onFormSubmit = async (event) => {
+        event.preventDefault(); // prevent for default redirection
+
         try {
-            if (props?.mode === UserFormMode.EDIT_MODE) {
-                // Edits the user using the email, name, birthdate and the divisions selected uuids
-                const user = new EditUser(
-                    email,
-                    name,
-                    birthdate,
-                    password,
-                    //Get the selected divisions uuid's
-                    divisionsSelected.map((division) => division.uuid)
-                );
-
-                await UserManagementService.editUser(
-                    auth.user,
-                    new EditUser(
-                        user,
+            switch (mode) {
+                case UserFormMode.EDIT_MODE: {
+                    // Edits the user using the email, name, birthdate and the divisions selected uuids
+                    const editUser = new EditUser(
+                        email,
                         name,
-                        birthdate,
+                        moment(birthdate).format("YYYY-MM-DD"),
                         password,
-                        divisionsSelected
-                    ),
-                    props.user.uuid
-                );
-            } else {
-                // Create the user using the email, name, birthdate, password and the divisions selected uuids
-                const user = new AddUser(
-                    email,
-                    name,
-                    birthdate,
-                    password,
-                    //Get the selected divisions uuid's
-                    divisionsSelected.map((division) => division.uuid)
-                );
+                        //Get the selected divisions uuid's
+                        divisionsSelected.map((division) => division.uuid)
+                    );
 
-                await UserManagementService.addUser(auth.user, user);
+                    await UserManagementService.editUser(
+                        auth.user,
+                        editUser,
+                        userToEdit.uuid
+                    );
+
+                    onSubmitCallback(editUser.user);
+
+                    break;
+                }
+                case UserFormMode.ADD_MODE: {
+                    // Create the user using the email, name, birthdate, password and the divisions selected uuids
+                    const addUser = new AddUser(
+                        email,
+                        name,
+                        moment(birthdate).format("YYYY-MM-DD"),
+                        password,
+                        //Get the selected divisions uuid's
+                        divisionsSelected.map((division) => division.uuid)
+                    );
+
+                    await UserManagementService.addUser(auth.user, addUser);
+
+                    onSubmitCallback(addUser.user);
+
+                    break;
+                }
+                default: {
+                    break;
+                }
             }
         } catch (e) {
             // if status code is unauthorized the user credentials are wrong
-            if (e?.response?.status === KNOWHTTPSTATUS.unauthorized)
-                e.message = strings.login.invalidCredentials;
-
-            console.log(e);
+            switch (e?.response?.status) {
+                case KNOWHTTPSTATUS.unauthorized: {
+                    auth.logout();
+                    navigate("/"); // redirect to login
+                    break;
+                }
+                case KNOWHTTPSTATUS.unprocessableEntity: {
+                    // email already in use error
+                    if (
+                        e.response?.data.errorCode ===
+                        KNOWN_APP_ERRORS.emailUsed
+                    )
+                        onError(
+                            strings.adminstration.users.form.emailAlreadyInUse
+                        );
+                    break;
+                }
+                default: {
+                    onError(e.message);
+                }
+            }
         }
     };
 
     return (
-        <Box className="form-user-container">
-            <div className="user-form-container">
+        <React.Fragment>
+            <DialogTitle id="alert-dialog-title">
+                {mode === UserFormMode.EDIT_MODE
+                    ? `${strings.adminstration.users.form.title.edit} ${userToEdit.name}`
+                    : strings.adminstration.users.form.title.add}
+            </DialogTitle>
+            <Box
+                component="form"
+                autoComplete="off"
+                onSubmit={onFormSubmit}
+                className="form-user-container">
+                <div className="user-form-container">
+                    <TextField
+                        required
+                        label={strings.adminstration.users.form.labels.name}
+                        value={name}
+                        onChange={(newValue) => setName(newValue.target.value)}
+                        error={!nameValidationResult.result}
+                        helperText={nameValidationResult.message}
+                    />
+                    <TextField
+                        required={mode === UserFormMode.ADD_MODE}
+                        label={strings.adminstration.users.form.labels.password}
+                        type="password"
+                        onChange={(newValue) =>
+                            setPassword(newValue.target.value)
+                        }
+                        error={!passwordValidationResult.result}
+                        helperText={passwordValidationResult.message}
+                        autoComplete="current-password"
+                    />
+                </div>
+
                 <TextField
                     required
-                    label={strings.adminstration.users.name}
-                    value={name}
-                    onChange={(newValue) => setName(newValue.target.value)}
-                    error={!nameValidationResult.result}
-                    helperText={nameValidationResult.message}
+                    label={strings.adminstration.users.form.labels.email}
+                    inputProps={{ inputMode: "email" }}
+                    value={email}
+                    disabled={mode === UserFormMode.EDIT_MODE}
+                    onChange={(newValue) => setEmail(newValue.target.value)}
+                    error={!emailValidationResult.result}
+                    helperText={emailValidationResult.message}
+                    autoComplete="username"
                 />
-                <TextField
-                    required={props.mode === UserFormMode.ADD_MODE}
-                    label={strings.login.password}
-                    type="password"
-                    onChange={(newValue) => setPassword(newValue.target.value)}
-                    error={!passwordValidationResult.result}
-                    helperText={passwordValidationResult.message}
-                    autocomplete="current-password"
-                />
-            </div>
 
-            <TextField
-                required
-                label={strings.login.email}
-                inputProps={{ inputMode: "email" }}
-                value={email}
-                disabled={props?.mode === UserFormMode.EDIT_MODE}
-                onChange={(newValue) => setEmail(newValue.target.value)}
-                error={!emailValidationResult.result}
-                helperText={emailValidationResult.message}
-            />
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                    <DesktopDatePicker
+                        label={
+                            strings.adminstration.users.form.labels.birthDate
+                        }
+                        inputFormat="DD/MM/YYYY"
+                        value={birthdate}
+                        onChange={handleBirthDateChange}
+                        renderInput={(params) => <TextField {...params} />}
+                    />
+                </LocalizationProvider>
 
-            <LocalizationProvider dateAdapter={AdapterMoment}>
-                <DesktopDatePicker
-                    label={strings.adminstration.users.birthdate}
-                    inputFormat="DD/MM/YYYY"
-                    value={birthdate}
-                    onChange={handleBirthDateChange}
-                    renderInput={(params) => <TextField {...params} />}
-                />
-            </LocalizationProvider>
-
-            {building ? (
-                <MultipleSelectChip
-                    divisions={building.floorDtos}
-                    selectedDivisions={divisionsSelected}
-                    error={!divisionsValidationResult.result}
-                    helperText={divisionsValidationResult.message}
-                    onSelectedDivisions={(selectedDivisions) =>
-                        setDivisionsSelected(selectedDivisions)
-                    }
-                />
-            ) : (
-                <Skeleton
-                    variant="rounded"
-                    height={60}
-                    sx={{ m: 1, width: 300 }}
-                />
-            )}
-            <Button
-                disabled={isFormNotValid()}
-                type="submit"
-                variant="contained"
-                onClick={() => onFormSubmit()}>
-                {strings.adminstration.users.submit}
-            </Button>
-        </Box>
-    );
-}
-
-export function AddUserDialog(props) {
-    const { onClose, open } = props;
-
-    const handleClose = () => {
-        onClose();
-    };
-
-    return (
-        <Dialog onClose={handleClose} open={open}>
-            <DialogTitle>{strings.adminstration.users.adduser}</DialogTitle>
-            <AddUserForm mode={props.mode} user={props.user} />
-        </Dialog>
+                {building ? (
+                    <MultipleSelectChip
+                        divisions={building.floorDtos}
+                        selectedDivisions={divisionsSelected}
+                        error={!divisionsValidationResult.result}
+                        helperText={divisionsValidationResult.message}
+                        onSelectedDivisions={(selectedDivisions) =>
+                            setDivisionsSelected(selectedDivisions)
+                        }
+                    />
+                ) : (
+                    <Skeleton variant="rounded" height={60} />
+                )}
+                <Button
+                    disabled={isFormNotValid()}
+                    type="submit"
+                    variant="contained"
+                    onClick={() => onFormSubmit()}>
+                    {strings.adminstration.users.submit}
+                </Button>
+            </Box>
+        </React.Fragment>
     );
 }
