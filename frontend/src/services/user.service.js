@@ -10,8 +10,8 @@ export default class UserService {
         leave: "api/fo/users/leave",
     };
 
-    // goto: "api/fo/divisions/goto",
-    // leave: "api/fo/divisions/leave",
+    // TODO goto: "api/fo/divisions/goto",
+    // TODO leave: "api/fo/divisions/leave",
 
     /**
      * User authentication

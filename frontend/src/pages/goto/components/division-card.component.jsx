@@ -7,6 +7,7 @@ import strings from "./../../../constants/strings";
 import { DIVISION_TYPE } from "../../../models/divisions-type.model";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import ChairIcon from "@mui/icons-material/Chair";
+import Tooltip from "@mui/material/Tooltip";
 
 export default function DivisionCard(props) {
     const { division, onClick, loading } = props;
@@ -25,7 +26,7 @@ export default function DivisionCard(props) {
             className="division-card"
             sx={{ minWidth: 275 }}
             onClick={() => onClick(division)}>
-            <CardContent className="division-henriu">
+            <CardContent className="division">
                 <Typography
                     variant="h5"
                     component="div"
@@ -67,7 +68,10 @@ export default function DivisionCard(props) {
                         )}
                         {division.name}
                     </div>
-                    <div className={alarmStateClass}></div>
+                    <Tooltip
+                        title={strings.adminstration.alarms.list.alarmStatus}>
+                        <div className={alarmStateClass}></div>
+                    </Tooltip>
                 </Typography>
                 <Divider></Divider>
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
