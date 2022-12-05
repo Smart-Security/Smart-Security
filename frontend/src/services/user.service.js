@@ -6,12 +6,9 @@ export default class UserService {
         login: "auth/login",
         register: "auth/register",
         profile: "api/fo/users",
-        goto: "api/fo/users/goto",
-        leave: "api/fo/users/leave",
+        goto: "api/fo/division/goto",
+        leave: "api/fo/division/leave",
     };
-
-    // TODO goto: "api/fo/divisions/goto",
-    // TODO leave: "api/fo/divisions/leave",
 
     /**
      * User authentication
